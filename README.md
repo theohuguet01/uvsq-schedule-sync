@@ -131,7 +131,7 @@ sudo systemctl start uvsq-schedule-sync.service  # forcer une exécution immédi
 ### Avec cron (alternative)
 
 ```cron
-*/15 * * * * cd /chemin/vers/uvsq-schedule-sync && /usr/bin/node src/index.js --out /var/www/edt.upsclay.thuguet.fr/<token>/edt.ics >> /var/log/uvsq-schedule-sync.log 2>&1
+*/5 * * * * cd /chemin/vers/uvsq-schedule-sync && /usr/bin/node src/index.js --out /var/www/edt.upsclay.thuguet.fr/<token>/edt.ics >> /var/log/uvsq-schedule-sync.log 2>&1
 ```
 
 ### Servir le calendrier derrière Caddy
