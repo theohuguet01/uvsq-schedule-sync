@@ -42,7 +42,9 @@ async function main() {
   const rawEvents = await fetchSchedule(config)
   console.error(`[index] ${rawEvents.length} événement(s) reçu(s) depuis l'API`)
 
-  const events = rawEvents.map(parseEvent).filter((event) => event !== null)
+  const events = rawEvents
+    .map((rawEvent) => parseEvent(rawEvent, config.formation))
+    .filter((event) => event !== null)
   console.error(`[index] ${events.length} événement(s) valide(s) après nettoyage`)
 
   const ics = generateIcs(events, config)

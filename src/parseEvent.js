@@ -1,32 +1,55 @@
 import he from 'he'
 
+import { config } from '../config.js'
+
 const { decode } = he
 
 // Format attendu par l'API UVSQ : horodatage local sans fuseau, ex. 2026-09-07T09:00:00
 const NAIVE_DATETIME_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/
 
-function cleanDescription(description) {
-  return decode(description ?? '')
-    .replace(/<br\s*\/?>/gi, ' ')
+// Un <br /> entouré de sauts de ligne délimite un vrai champ (lieu / cours / formation).
+// Un <br /> "en ligne" (ex. plusieurs salles listées à la suite) reste dans le même champ.
+const FIELD_SEPARATOR_RE = /\r?\n\r?\n<br\s*\/?>\r?\n\r?\n/gi
+
+function cleanField(field) {
+  return decode(field)
+    .replace(/<br\s*\/?>/gi, ', ')
     .replace(/[\r\n]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
 }
 
-// Le format brut est "[Lieu]Résumé". On tolère l'absence de crochets
-// (au lieu de produire un lieu/résumé tronqué silencieusement).
-function splitLocationSummary(description) {
-  const openIndex = description.indexOf('[')
-  const closeIndex = description.indexOf(']')
+function stripTrailingCode(field) {
+  return field.replace(/\s*\[[^\]]*\]\s*$/, '').trim()
+}
 
-  if (openIndex === -1 || closeIndex === -1 || closeIndex < openIndex) {
-    return { location: '', summary: description }
+/**
+ * La description brute empile plusieurs champs (lieu, cours, formation, groupe...)
+ * séparés par des <br /> de paragraphe. Le champ "formation" est identique pour
+ * tous les événements d'un même abonnement (il contient le code de la formation,
+ * ex. "[MYIRS1_888]") : on l'écarte car il n'apporte aucune information par
+ * événement. Le lieu est toujours le premier champ ; le résumé est la
+ * concaténation des champs restants (généralement le nom du cours, parfois
+ * suivi de son propre code, ex. "Fondamentaux des Réseaux [MYIRS114]").
+ */
+function splitFields(description, formationCode) {
+  const fields = description
+    .split(FIELD_SEPARATOR_RE)
+    .map(cleanField)
+    .filter(Boolean)
+
+  if (fields.length === 0) {
+    return { location: '', summary: '' }
   }
 
-  return {
-    location: description.slice(0, openIndex).trim(),
-    summary: description.slice(closeIndex + 1).trim(),
-  }
+  const [location, ...rest] = fields
+  const summary = rest
+    .filter((field) => !field.includes(`[${formationCode}]`))
+    .map(stripTrailingCode)
+    .filter(Boolean)
+    .join(' ')
+
+  return { location, summary }
 }
 
 /**
@@ -34,7 +57,7 @@ function splitLocationSummary(description) {
  * Retourne null (avec un avertissement sur stderr) si l'événement est malformé,
  * afin qu'un seul événement invalide n'interrompe pas tout le calendrier.
  */
-export function parseEvent(rawEvent) {
+export function parseEvent(rawEvent, formationCode = config.formation) {
   const id = rawEvent?.id
   const start = rawEvent?.start
   const end = rawEvent?.end
@@ -49,8 +72,7 @@ export function parseEvent(rawEvent) {
     return null
   }
 
-  const description = cleanDescription(rawEvent?.description)
-  const { location, summary } = splitLocationSummary(description)
+  const { location, summary } = splitFields(rawEvent?.description ?? '', formationCode)
 
   return {
     id: String(id),
