@@ -7,13 +7,17 @@ After=network-online.target
 Type=oneshot
 User=uvsq-schedule-sync
 WorkingDirectory=/opt/uvsq-schedule-sync
-Environment=UVSQ_OUT_PATH=/var/www/html/edt.ics
+# Fichier local (non versionné) contenant UVSQ_OUT_PATH avec le chemin réel,
+# token secret inclus. Voir deploy/env.example. Le "-" rend le fichier optionnel
+# pour que l'unité ne plante pas s'il est absent (les valeurs par défaut de
+# config.js s'appliquent alors, sans écrire de fichier).
+EnvironmentFile=-/etc/uvsq-schedule-sync/env
 ExecStart=/usr/bin/node src/index.js
 
 # Durcissement : le service n'a besoin d'écrire que dans WorkingDirectory et
-# le repertoire du fichier de sortie.
+# le repertoire racine servi par Caddy.
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/opt/uvsq-schedule-sync /var/www/html
+ReadWritePaths=/opt/uvsq-schedule-sync /var/www/edt
 PrivateTmp=true

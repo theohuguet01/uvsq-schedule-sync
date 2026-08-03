@@ -101,13 +101,20 @@ cd /opt/uvsq-schedule-sync && sudo npm install --omit=dev
 
 # 2. Créer un utilisateur système dédié, sans shell interactif
 sudo useradd --system --no-create-home --shell /usr/sbin/nologin uvsq-schedule-sync
-sudo chown -R uvsq-schedule-sync:uvsq-schedule-sync /opt/uvsq-schedule-sync
 
-# 3. Donner le droit d'écriture sur le répertoire servi par le serveur web
-sudo chown uvsq-schedule-sync:uvsq-schedule-sync /var/www/html
+# 3. Générer un token secret et créer le répertoire de sortie (voir la
+#    section Caddy ci-dessous pour le rôle de ce token dans l'URL)
+TOKEN=$(openssl rand -hex 16)
+sudo mkdir -p "/var/www/edt/$TOKEN"
+sudo chown -R uvsq-schedule-sync:uvsq-schedule-sync /opt/uvsq-schedule-sync /var/www/edt
 
-# 4. Installer les unités (adapter ExecStart/WorkingDirectory/Environment
-#    dans le .service si vos chemins diffèrent, ex. `which node`)
+# 4. Créer le fichier d'environnement (hors dépôt git, contient le token)
+sudo mkdir -p /etc/uvsq-schedule-sync
+echo "UVSQ_OUT_PATH=/var/www/edt/$TOKEN/edt.ics" | sudo tee /etc/uvsq-schedule-sync/env
+echo "URL du calendrier : https://edt.huguet-groupe.com/$TOKEN/edt.ics"
+
+# 5. Installer les unités (adapter ExecStart/WorkingDirectory dans le
+#    .service si vos chemins diffèrent, ex. `which node`)
 sudo cp deploy/uvsq-schedule-sync.service deploy/uvsq-schedule-sync.timer /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now uvsq-schedule-sync.timer
@@ -124,15 +131,39 @@ sudo systemctl start uvsq-schedule-sync.service  # forcer une exécution immédi
 ### Avec cron (alternative)
 
 ```cron
-*/15 * * * * cd /chemin/vers/uvsq-schedule-sync && /usr/bin/node src/index.js --out /var/www/html/edt.ics >> /var/log/uvsq-schedule-sync.log 2>&1
+*/15 * * * * cd /chemin/vers/uvsq-schedule-sync && /usr/bin/node src/index.js --out /var/www/edt/<token>/edt.ics >> /var/log/uvsq-schedule-sync.log 2>&1
 ```
 
-### Servir le calendrier
+### Servir le calendrier derrière Caddy
 
-Le fichier `edt.ics` peut ensuite être servi tel quel par nginx/Caddy/Apache et
-ajouté comme abonnement de calendrier (URL `webcal://` ou `https://`) dans
-Apple Calendar, Google Agenda ou Outlook, qui se chargeront de le rafraîchir
-automatiquement.
+Un exemple est fourni dans [`deploy/Caddyfile.example`](./deploy/Caddyfile.example) :
+un sous-domaine dédié, servi en statique (`file_server`), avec le bon
+`Content-Type` pour un fichier `.ics`. Comme le fichier est écrit sous
+`/var/www/edt/<token>/edt.ics` (token généré à l'étape 3 du déploiement
+systemd), l'URL du calendrier n'est ni protégée par mot de passe ni devinable :
+
+- Caddy ne liste jamais le contenu d'un répertoire sans la directive `browse`
+  (absente ici), donc `/var/www/edt/` seul renvoie une erreur 404.
+- Sans authentification, aucun souci de compatibilité côté clients calendrier
+  (Apple Calendar/Google Agenda gèrent mal le Basic Auth sur `webcal://`).
+
+À adapter et fusionner dans votre Caddyfile existant, puis valider avant
+rechargement :
+
+```bash
+caddy validate --config /etc/caddy/Caddyfile
+sudo systemctl reload caddy
+```
+
+Ajouter ensuite l'abonnement dans Apple Calendar / Google Agenda / Outlook
+avec l'URL affichée à l'étape 4 du déploiement, en `webcal://` (rafraîchi
+automatiquement par le client) ou `https://` (import statique, à rafraîchir
+manuellement selon l'app).
+
+Important : le token fait partie de l'URL secrète, ne le committez jamais
+dans ce dépôt (git). Il ne vit que dans `/etc/uvsq-schedule-sync/env` sur le
+serveur - c'est pour ça que `deploy/env.example` ne contient qu'un `<token>`
+en placeholder et que `.service` le charge via `EnvironmentFile`.
 
 ## Licence
 
