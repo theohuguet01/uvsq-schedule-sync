@@ -181,13 +181,21 @@ service : c'est un fichier statique, à copier une seule fois (ou à chaque
 mise à jour du dépôt) :
 
 ```bash
-sudo cp public/index.html public/logo-isty-uvsq-paris-saclay.png /var/www/edt.upsclay.thuguet.fr/
-sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/index.html /var/www/edt.upsclay.thuguet.fr/logo-isty-uvsq-paris-saclay.png
+sudo cp public/index.html public/logo-isty-uvsq-paris-saclay.png public/robots.txt /var/www/edt.upsclay.thuguet.fr/
+sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/index.html /var/www/edt.upsclay.thuguet.fr/logo-isty-uvsq-paris-saclay.png /var/www/edt.upsclay.thuguet.fr/robots.txt
 ```
 
 Le fichier logo provient du dossier `branding/` (assets officiels fournis
 directement par l'établissement) et n'est pas modifié ici (pas de
 recadrage, de changement de couleur).
+
+Le site n'est volontairement pas destiné à être indexé par les moteurs de
+recherche (calendrier personnel) : `public/robots.txt` (`Disallow: /`), une
+balise `<meta name="robots" content="noindex, nofollow, noarchive">` sur la
+page d'accueil, et l'en-tête `X-Robots-Tag` envoyé par Caddy pour tout le
+site (y compris `edt.ics`, qui n'a pas de balise `<meta>` puisque ce n'est
+pas du HTML) - trois couches redondantes plutôt qu'une seule, en plus du
+chemin secret déjà en place.
 
 ## Licence
 
