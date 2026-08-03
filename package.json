@@ -1,0 +1,21 @@
+{
+  "name": "uvsq-schedule-sync",
+  "version": "1.0.0",
+  "description": "Export de l'emploi du temps UVSQ (edt.uvsq.fr) au format iCal",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node --test",
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "he": "^1.2.0",
+    "ical-generator": "^11.1.0"
+  }
+}
