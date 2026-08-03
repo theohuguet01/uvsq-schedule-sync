@@ -6,10 +6,15 @@
 # (pas de directive "browse" ci-dessous).
 
 edt.upsclay.thuguet.fr {
-	root * /var/www/edt
+	root * /var/www/edt.upsclay.thuguet.fr
 	file_server
 
 	@ics path *.ics
 	header @ics Content-Type "text/calendar; charset=utf-8"
 	header @ics Cache-Control "public, max-age=300"
+
+	log {
+		output file /var/log/caddy/edt.upsclay.thuguet.fr.access.log
+		format console
+	}
 }

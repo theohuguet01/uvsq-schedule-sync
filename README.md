@@ -105,12 +105,12 @@ sudo useradd --system --no-create-home --shell /usr/sbin/nologin uvsq-schedule-s
 # 3. Générer un token secret et créer le répertoire de sortie (voir la
 #    section Caddy ci-dessous pour le rôle de ce token dans l'URL)
 TOKEN=$(openssl rand -hex 16)
-sudo mkdir -p "/var/www/edt/$TOKEN"
-sudo chown -R uvsq-schedule-sync:uvsq-schedule-sync /opt/uvsq-schedule-sync /var/www/edt
+sudo mkdir -p "/var/www/edt.upsclay.thuguet.fr/$TOKEN"
+sudo chown -R uvsq-schedule-sync:uvsq-schedule-sync /opt/uvsq-schedule-sync /var/www/edt.upsclay.thuguet.fr
 
 # 4. Créer le fichier d'environnement (hors dépôt git, contient le token)
 sudo mkdir -p /etc/uvsq-schedule-sync
-echo "UVSQ_OUT_PATH=/var/www/edt/$TOKEN/edt.ics" | sudo tee /etc/uvsq-schedule-sync/env
+echo "UVSQ_OUT_PATH=/var/www/edt.upsclay.thuguet.fr/$TOKEN/edt.ics" | sudo tee /etc/uvsq-schedule-sync/env
 echo "URL du calendrier : https://edt.upsclay.thuguet.fr/$TOKEN/edt.ics"
 
 # 5. Installer les unités (adapter ExecStart/WorkingDirectory dans le
@@ -131,7 +131,7 @@ sudo systemctl start uvsq-schedule-sync.service  # forcer une exécution immédi
 ### Avec cron (alternative)
 
 ```cron
-*/15 * * * * cd /chemin/vers/uvsq-schedule-sync && /usr/bin/node src/index.js --out /var/www/edt/<token>/edt.ics >> /var/log/uvsq-schedule-sync.log 2>&1
+*/15 * * * * cd /chemin/vers/uvsq-schedule-sync && /usr/bin/node src/index.js --out /var/www/edt.upsclay.thuguet.fr/<token>/edt.ics >> /var/log/uvsq-schedule-sync.log 2>&1
 ```
 
 ### Servir le calendrier derrière Caddy
@@ -139,11 +139,11 @@ sudo systemctl start uvsq-schedule-sync.service  # forcer une exécution immédi
 Un exemple est fourni dans [`deploy/Caddyfile.example`](./deploy/Caddyfile.example) :
 un sous-domaine dédié, servi en statique (`file_server`), avec le bon
 `Content-Type` pour un fichier `.ics`. Comme le fichier est écrit sous
-`/var/www/edt/<token>/edt.ics` (token généré à l'étape 3 du déploiement
+`/var/www/edt.upsclay.thuguet.fr/<token>/edt.ics` (token généré à l'étape 3 du déploiement
 systemd), l'URL du calendrier n'est ni protégée par mot de passe ni devinable :
 
 - Caddy ne liste jamais le contenu d'un répertoire sans la directive `browse`
-  (absente ici), donc `/var/www/edt/` seul renvoie une erreur 404.
+  (absente ici), donc `/var/www/edt.upsclay.thuguet.fr/` seul renvoie une erreur 404.
 - Sans authentification, aucun souci de compatibilité côté clients calendrier
   (Apple Calendar/Google Agenda gèrent mal le Basic Auth sur `webcal://`).
 

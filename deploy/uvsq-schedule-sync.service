@@ -19,5 +19,5 @@ ExecStart=/usr/bin/node src/index.js
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/opt/uvsq-schedule-sync /var/www/edt
+ReadWritePaths=/opt/uvsq-schedule-sync /var/www/edt.upsclay.thuguet.fr
 PrivateTmp=true
