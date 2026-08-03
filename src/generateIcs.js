@@ -3,7 +3,7 @@ import ical from 'ical-generator'
 // Construit le calendrier iCal à partir des événements déjà nettoyés (parseEvent).
 // start/end restent des chaînes "naïves" (sans fuseau) : ical-generator les
 // interprète comme heure locale et les étiquette avec le TZID de cfg.timezone,
-// ce qui reproduit exactement le comportement de l'ancien script bash.
+// quel que soit le fuseau horaire du serveur qui exécute le script.
 export function generateIcs(events, cfg) {
   const calendar = ical({
     name: cfg.calendarName,

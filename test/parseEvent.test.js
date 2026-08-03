@@ -4,8 +4,8 @@ import { test } from 'node:test'
 import { parseEvent } from '../src/parseEvent.js'
 
 test('parse un événement bien formé avec lieu et résumé', () => {
-  // Format observé côté API : "<lieu>[<code interne>]<résumé>" — le contenu
-  // entre crochets (code de groupe/couleur) est ignoré, comme dans le script bash d'origine.
+  // Format observé côté API : "<lieu>[<code interne>]<résumé>" - le contenu
+  // entre crochets (code de groupe/couleur) est ignoré.
   const result = parseEvent({
     id: '42',
     start: '2026-09-07T09:00:00',
