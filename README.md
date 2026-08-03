@@ -126,9 +126,18 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now uvsq-schedule-sync.timer
 ```
 
-Pour les mises à jour suivantes, il suffit de `cd /opt/uvsq-schedule-sync && git pull` (en tant que
-propriétaire du dossier, pas besoin de sudo) puis de recopier les fichiers
-`deploy/`/`public/` modifiés le cas échéant.
+Pour les mises à jour suivantes, en tant que propriétaire du dossier (pas
+besoin de sudo) :
+
+```bash
+cd /opt/uvsq-schedule-sync
+git pull
+npm install --omit=dev   # si package.json/package-lock.json ont changé
+```
+
+Puis recopier les fichiers `deploy/`/`public/` modifiés le cas échéant
+(`.service`/`.timer` → `/etc/systemd/system/` + `daemon-reload`, fichiers
+statiques → `/var/www/edt.upsclay.thuguet.fr/`).
 
 Vérifier :
 
