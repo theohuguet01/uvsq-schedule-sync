@@ -14,10 +14,13 @@ WorkingDirectory=/opt/uvsq-schedule-sync
 EnvironmentFile=-/etc/uvsq-schedule-sync/env
 ExecStart=/usr/bin/node src/index.js
 
-# Durcissement : le service n'a besoin d'écrire que dans WorkingDirectory et
-# le repertoire racine servi par Caddy.
+# Durcissement : le service n'a besoin que de LIRE son code (WorkingDirectory),
+# jamais d'y écrire - seul le répertoire servi par Caddy doit être accessible
+# en écriture. ProtectSystem=strict rend tout le reste read-only, ce qui
+# n'empêche pas la lecture du code, donc WorkingDirectory n'a pas besoin
+# d'être dans ReadWritePaths ni d'appartenir à cet utilisateur.
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/opt/uvsq-schedule-sync /var/www/edt.upsclay.thuguet.fr
+ReadWritePaths=/var/www/edt.upsclay.thuguet.fr
 PrivateTmp=true

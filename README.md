@@ -94,19 +94,25 @@ cron), avec logs consultables via `journalctl` et durcissement de base
 (`ProtectSystem`, `NoNewPrivileges`...).
 
 ```bash
-# 1. Déployer le code et installer les dépendances de production
+# 1. Cloner le code (en tant que votre utilisateur normal, PAS root/sudo) et
+#    installer les dépendances de production. Un vrai clone git (plutôt qu'un
+#    simple cp) permet de mettre à jour ensuite avec un `git pull`.
 sudo mkdir -p /opt/uvsq-schedule-sync
-sudo cp -r . /opt/uvsq-schedule-sync
-cd /opt/uvsq-schedule-sync && sudo npm install --omit=dev
+sudo chown "$(whoami)" /opt/uvsq-schedule-sync
+git clone https://github.com/theohuguet01/uvsq-schedule-sync.git /opt/uvsq-schedule-sync
+cd /opt/uvsq-schedule-sync && npm install --omit=dev
 
-# 2. Créer un utilisateur système dédié, sans shell interactif
+# 2. Créer un utilisateur système dédié, sans shell interactif. Il n'a besoin
+#    QUE de lire /opt/uvsq-schedule-sync (permissions par défaut suffisent,
+#    inutile de lui en donner la propriété) - il écrit uniquement dans
+#    /var/www/edt.upsclay.thuguet.fr.
 sudo useradd --system --no-create-home --shell /usr/sbin/nologin uvsq-schedule-sync
 
 # 3. Générer un token secret et créer le répertoire de sortie (voir la
 #    section Caddy ci-dessous pour le rôle de ce token dans l'URL)
 TOKEN=$(openssl rand -hex 16)
 sudo mkdir -p "/var/www/edt.upsclay.thuguet.fr/$TOKEN"
-sudo chown -R uvsq-schedule-sync:uvsq-schedule-sync /opt/uvsq-schedule-sync /var/www/edt.upsclay.thuguet.fr
+sudo chown -R uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr
 
 # 4. Créer le fichier d'environnement (hors dépôt git, contient le token)
 sudo mkdir -p /etc/uvsq-schedule-sync
@@ -119,6 +125,10 @@ sudo cp deploy/uvsq-schedule-sync.service deploy/uvsq-schedule-sync.timer /etc/s
 sudo systemctl daemon-reload
 sudo systemctl enable --now uvsq-schedule-sync.timer
 ```
+
+Pour les mises à jour suivantes, il suffit de `cd /opt/uvsq-schedule-sync && git pull` (en tant que
+propriétaire du dossier, pas besoin de sudo) puis de recopier les fichiers
+`deploy/`/`public/` modifiés le cas échéant.
 
 Vérifier :
 
