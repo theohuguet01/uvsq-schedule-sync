@@ -143,9 +143,13 @@ un sous-domaine dédié, servi en statique (`file_server`), avec le bon
 systemd), l'URL du calendrier n'est ni protégée par mot de passe ni devinable :
 
 - Caddy ne liste jamais le contenu d'un répertoire sans la directive `browse`
-  (absente ici), donc `/var/www/edt.upsclay.thuguet.fr/` seul renvoie une erreur 404.
+  (absente ici) : le dossier `<token>/` seul (sans `edt.ics`) renvoie une erreur 404.
 - Sans authentification, aucun souci de compatibilité côté clients calendrier
   (Apple Calendar/Google Agenda gèrent mal le Basic Auth sur `webcal://`).
+
+La racine `/var/www/edt.upsclay.thuguet.fr/` sert elle une page d'accueil statique
+(voir section suivante) : elle ne dévoile rien sur le token, juste une page
+d'atterrissage neutre pour qui tombe sur le domaine sans le lien complet.
 
 À adapter et fusionner dans votre Caddyfile existant, puis valider avant
 rechargement :
@@ -164,6 +168,25 @@ Important : le token fait partie de l'URL secrète, ne le committez jamais
 dans ce dépôt (git). Il ne vit que dans `/etc/uvsq-schedule-sync/env` sur le
 serveur - c'est pour ça que `deploy/env.example` ne contient qu'un `<token>`
 en placeholder et que `.service` le charge via `EnvironmentFile`.
+
+### Page d'accueil du domaine
+
+[`public/index.html`](./public/index.html) affiche simplement le logo de
+l'Université Paris-Saclay centré, pour que la racine du domaine (sans le
+token) ne tombe pas sur une 404. Contrairement à `edt.ics`, ce n'est pas
+généré par le service : c'est un fichier statique, à copier une seule fois
+(ou à chaque mise à jour du dépôt) :
+
+```bash
+sudo cp public/index.html public/logo-paris-saclay.svg /var/www/edt.upsclay.thuguet.fr/
+sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/index.html /var/www/edt.upsclay.thuguet.fr/logo-paris-saclay.svg
+```
+
+Le logo ([source : Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Logo_Universit%C3%A9_Paris-Saclay_2019-12.svg),
+reproduction du logo officiel 2019 de l'université) est dans le domaine
+public au sens du droit d'auteur (forme géométrique/texte simple), mais
+reste potentiellement protégé en tant que marque selon les juridictions -
+il n'est pas modifié ici (pas de recadrage, de changement de couleur).
 
 ## Licence
 

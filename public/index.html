@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EDT - Université Paris-Saclay</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --card-bg: transparent;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d0d0d;
+      --fg: #f0f0f0;
+      /* Le logo est bordeaux sur fond transparent : sans carte claire
+         derrière, il perd tout contraste sur un fond sombre. */
+      --card-bg: #ffffff;
+    }
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .logo-card {
+    background: var(--card-bg);
+    padding: min(6vw, 32px);
+    border-radius: 16px;
+  }
+
+  .logo {
+    width: min(70vw, 420px);
+    height: auto;
+    display: block;
+  }
+</style>
+</head>
+<body>
+  <div class="logo-card">
+    <img class="logo" src="/logo-paris-saclay.svg" alt="Université Paris-Saclay">
+  </div>
+</body>
+</html>
