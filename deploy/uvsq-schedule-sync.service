@@ -1,0 +1,19 @@
+[Unit]
+Description=Regenere le calendrier iCal UVSQ (uvsq-schedule-sync)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=uvsq-schedule-sync
+WorkingDirectory=/opt/uvsq-schedule-sync
+Environment=UVSQ_OUT_PATH=/var/www/html/edt.ics
+ExecStart=/usr/bin/node src/index.js
+
+# Durcissement : le service n'a besoin d'écrire que dans WorkingDirectory et
+# le repertoire du fichier de sortie.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/uvsq-schedule-sync /var/www/html
+PrivateTmp=true
