@@ -171,22 +171,23 @@ en placeholder et que `.service` le charge via `EnvironmentFile`.
 
 ### Page d'accueil du domaine
 
-[`public/index.html`](./public/index.html) affiche simplement le logo de
-l'Université Paris-Saclay centré, pour que la racine du domaine (sans le
-token) ne tombe pas sur une 404. Contrairement à `edt.ics`, ce n'est pas
-généré par le service : c'est un fichier statique, à copier une seule fois
-(ou à chaque mise à jour du dépôt) :
+[`public/index.html`](./public/index.html) affiche le logo combiné
+ISTY / UVSQ / Université Paris-Saclay centré, pour que la racine du domaine
+(sans le token) ne tombe pas sur une 404. Ce logo tricéphale reflète le
+fonctionnement réel de la formation : cours dispensés à l'ISTY (école
+d'ingénieurs de l'UVSQ), diplôme délivré par l'Université Paris-Saclay
+(master mutualisé). Contrairement à `edt.ics`, ce n'est pas généré par le
+service : c'est un fichier statique, à copier une seule fois (ou à chaque
+mise à jour du dépôt) :
 
 ```bash
-sudo cp public/index.html public/logo-paris-saclay.svg /var/www/edt.upsclay.thuguet.fr/
-sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/index.html /var/www/edt.upsclay.thuguet.fr/logo-paris-saclay.svg
+sudo cp public/index.html public/logo-isty-uvsq-paris-saclay.png /var/www/edt.upsclay.thuguet.fr/
+sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/index.html /var/www/edt.upsclay.thuguet.fr/logo-isty-uvsq-paris-saclay.png
 ```
 
-Le logo ([source : Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Logo_Universit%C3%A9_Paris-Saclay_2019-12.svg),
-reproduction du logo officiel 2019 de l'université) est dans le domaine
-public au sens du droit d'auteur (forme géométrique/texte simple), mais
-reste potentiellement protégé en tant que marque selon les juridictions -
-il n'est pas modifié ici (pas de recadrage, de changement de couleur).
+Le fichier logo provient du dossier `branding/` (assets officiels fournis
+directement par l'établissement) et n'est pas modifié ici (pas de
+recadrage, de changement de couleur).
 
 ## Licence
 

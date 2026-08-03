@@ -1,2 +1,7 @@
 node_modules/
 *.ics
+.DS_Store
+
+# Chartes graphiques et sources de branding non destinées à être publiées
+# (seul l'asset dérivé utilisé dans public/ est commité).
+/branding/
