@@ -5,7 +5,7 @@
 # token joue le rôle de secret puisque Caddy ne liste pas les répertoires
 # (pas de directive "browse" ci-dessous).
 
-edt.huguet-groupe.com {
+edt.upsclay.thuguet.fr {
 	root * /var/www/edt
 	file_server
 

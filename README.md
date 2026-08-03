@@ -111,7 +111,7 @@ sudo chown -R uvsq-schedule-sync:uvsq-schedule-sync /opt/uvsq-schedule-sync /var
 # 4. Créer le fichier d'environnement (hors dépôt git, contient le token)
 sudo mkdir -p /etc/uvsq-schedule-sync
 echo "UVSQ_OUT_PATH=/var/www/edt/$TOKEN/edt.ics" | sudo tee /etc/uvsq-schedule-sync/env
-echo "URL du calendrier : https://edt.huguet-groupe.com/$TOKEN/edt.ics"
+echo "URL du calendrier : https://edt.upsclay.thuguet.fr/$TOKEN/edt.ics"
 
 # 5. Installer les unités (adapter ExecStart/WorkingDirectory dans le
 #    .service si vos chemins diffèrent, ex. `which node`)
