@@ -1,0 +1,29 @@
+[Unit]
+Description=Serveur d'auto-inscription (uvsq-schedule-sync) - genere un token par etudiant
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=uvsq-schedule-sync
+WorkingDirectory=/opt/uvsq-schedule-sync
+# Meme fichier d'environnement que le service de sync (voir
+# uvsq-schedule-sync.service) : UVSQ_STUDENTS_PATH/UVSQ_OUT_DIR sont partages,
+# plus UVSQ_PUBLIC_BASE_URL/UVSQ_REGISTER_* propres a ce service. Voir
+# deploy/env.example.
+EnvironmentFile=-/etc/uvsq-schedule-sync/env
+ExecStart=/usr/bin/node src/server.js
+Restart=on-failure
+RestartSec=5
+
+# Contrairement au service de sync (oneshot, une execution puis arret), celui-ci
+# tourne en continu pour ecouter les requetes HTTP - mais garde le meme
+# durcissement : lecture seule sur tout sauf le repertoire servi par Caddy.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/edt.upsclay.thuguet.fr
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

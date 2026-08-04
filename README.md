@@ -133,6 +133,92 @@ Pour ajouter ou retirer une personne, éditer le registre puis relancer une
 exécution (`sudo systemctl start uvsq-schedule-sync.service` avec systemd) :
 aucun redémarrage du timer n'est nécessaire.
 
+## Auto-inscription (page web)
+
+Plutôt que d'éditer le registre à la main pour chaque nouvelle personne,
+[`public/inscription.html`](./public/inscription.html) permet à chacun de
+générer lui-même son lien : un formulaire (nom + code de formation), un écran
+de confirmation, puis le lien webcal/https une fois le token créé.
+
+Cette page appelle en `fetch` (même origine, chemin relatif) un petit serveur
+HTTP dédié, [`src/server.js`](./src/server.js) (`http` natif, aucune
+dépendance ajoutée), qui expose uniquement `POST /api/register`. Contrairement
+au reste du projet (un script `oneshot` + un timer), ce serveur tourne en
+continu - c'est lui qui reçoit les inscriptions, ajoute l'entrée au registre
+(même fichier que le [mode multi-étudiants](#mode-multi-étudiants), donc
+compatible avec des entrées déjà ajoutées à la main), puis déclenche
+immédiatement une synchronisation pour ce seul étudiant afin que son lien soit
+utilisable tout de suite. Le timer périodique existant continue de rafraîchir
+tout le monde en tâche de fond, y compris les inscrits par ce formulaire.
+
+Le formulaire étant public (accessible à quiconque a l'URL, comme le reste du
+site - voir [Servir le calendrier derrière Caddy](#servir-le-calendrier-derrière-caddy)),
+plusieurs garde-fous limitent les abus :
+
+- **Format strict** du code de formation (lettres/chiffres/underscore
+  uniquement) avant tout envoi à l'API UVSQ - empêche l'injection de
+  caractères arbitraires dans la requête sortante.
+- **Rate limiting par IP** (fenêtre glissante en mémoire, `UVSQ_REGISTER_RATE_MAX`
+  tentatives par `UVSQ_REGISTER_RATE_WINDOW_MS` - 5 / 10 min par défaut).
+- **Honeypot** : un champ caché du formulaire, invisible pour un humain, qui
+  fait rejeter la requête s'il est rempli (signe d'un bot qui remplit tous
+  les champs du DOM).
+- Un nom déjà pris est refusé (409) plutôt que d'écraser l'entrée existante.
+
+Un code de formation invalide (faute de frappe, formation inexistante) ne
+fait pas échouer l'inscription : l'API UVSQ renvoie simplement 0 événement
+sans erreur HTTP dans ce cas (voir note plus haut) - le formulaire le détecte
+et affiche un avertissement (`eventCount: 0` dans la réponse de
+`/api/register`) plutôt que de laisser croire que tout s'est bien passé.
+
+Le formulaire recommandé est [`public/uvsq/inscription.html`](./public/uvsq)
+(voir [Variante de charte graphique](#variante-de-charte-graphique-uvsq)) ;
+`public/inscription.html` à la racine est une version neutre plus basique,
+sans les mêmes garde-fous visuels (thème générique, sans en-tête ni page de
+confidentialité dédiée).
+
+### Suppression des données (droit à l'effacement)
+
+[`public/uvsq/confidentialite.html`](./public/uvsq/confidentialite.html)
+inclut un formulaire de suppression en libre-service : coller le lien de
+calendrier reçu à l'inscription suffit à retirer l'entrée du registre et les
+fichiers publiés (`edt.ics` + statut), via `POST /api/unregister`. Le token
+contenu dans le lien fait office de preuve de possession, aucune autre
+vérification n'est demandée. Voir
+[`src/unregisterHandler.js`](./src/unregisterHandler.js).
+
+### Déployer le serveur d'inscription
+
+En plus des variables du [mode multi-étudiants](#mode-multi-étudiants)
+(`UVSQ_STUDENTS_PATH`, `UVSQ_OUT_DIR`), ce serveur a besoin de
+`UVSQ_PUBLIC_BASE_URL` (le domaine public, pour construire le lien renvoyé) -
+voir [`deploy/env.example`](./deploy/env.example) pour le détail des variables
+(port d'écoute, rate limiting).
+
+```bash
+# 1. Ajouter UVSQ_PUBLIC_BASE_URL (et ajuster les autres variables si besoin)
+#    dans /etc/uvsq-schedule-sync/env - voir deploy/env.example.
+
+# 2. Installer et démarrer le service (écoute en 127.0.0.1 uniquement, jamais
+#    exposé directement : c'est Caddy qui le rend joignable via /api/register
+#    et /api/unregister, voir deploy/Caddyfile.example)
+sudo cp deploy/uvsq-schedule-register.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now uvsq-schedule-register.service
+
+# 3. Publier les pages (voir aussi la section Page d'accueil du domaine) :
+#    index.html, inscription.html et confidentialite.html du dossier uvsq/
+sudo cp -r public/uvsq /var/www/edt.upsclay.thuguet.fr/
+sudo cp public/blason-uvsq-paris-saclay.png /var/www/edt.upsclay.thuguet.fr/
+sudo chown -R uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/uvsq /var/www/edt.upsclay.thuguet.fr/blason-uvsq-paris-saclay.png
+```
+
+Vérifier :
+
+```bash
+journalctl -u uvsq-schedule-register.service -f   # logs en direct
+```
+
 ## Tests
 
 ```bash
@@ -260,9 +346,18 @@ service : c'est un fichier statique, à copier une seule fois (ou à chaque
 mise à jour du dépôt) :
 
 ```bash
-sudo cp public/index.html public/logo-isty-uvsq-paris-saclay.png public/robots.txt /var/www/edt.upsclay.thuguet.fr/
-sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/index.html /var/www/edt.upsclay.thuguet.fr/logo-isty-uvsq-paris-saclay.png /var/www/edt.upsclay.thuguet.fr/robots.txt
+sudo cp public/index.html public/404.html public/logo-isty-uvsq-paris-saclay.png public/robots.txt /var/www/edt.upsclay.thuguet.fr/
+sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/index.html /var/www/edt.upsclay.thuguet.fr/404.html /var/www/edt.upsclay.thuguet.fr/logo-isty-uvsq-paris-saclay.png /var/www/edt.upsclay.thuguet.fr/robots.txt
 ```
+
+[`public/404.html`](./public/404.html) est servi pour toute page introuvable
+(voir la directive `handle_errors` de
+[`deploy/Caddyfile.example`](./deploy/Caddyfile.example)) - y compris un
+token de calendrier inconnu, qui reste ainsi indiscernable d'une page qui
+n'existe pas.
+
+`public/inscription.html` (voir [Auto-inscription](#auto-inscription-page-web))
+se copie de la même façon, uniquement si le serveur d'inscription est déployé.
 
 Le fichier logo provient du dossier `branding/` (assets officiels fournis
 directement par l'établissement) et n'est pas modifié ici (pas de
@@ -275,6 +370,42 @@ page d'accueil, et l'en-tête `X-Robots-Tag` envoyé par Caddy pour tout le
 site (y compris `edt.ics`, qui n'a pas de balise `<meta>` puisque ce n'est
 pas du HTML) - trois couches redondantes plutôt qu'une seule, en plus du
 chemin secret déjà en place.
+
+### Variante de charte graphique UVSQ
+
+En plus de la page d'accueil et du formulaire d'inscription à la racine
+(logo ISTY/UVSQ/Paris-Saclay, thème neutre), [`public/uvsq/`](./public/uvsq)
+décline les mêmes pages sous la charte graphique de l'**UVSQ**, calée à la
+fois sur leur charte graphique PDF (couleurs, typographie) et sur le rendu
+réel de [uvsq.fr](https://www.uvsq.fr) (mise en page, usage effectif des
+couleurs - assez différent des gabarits internes PowerPoint/newsletters de
+leur charte) :
+
+- Teal institutionnel `#0092BB` **en aplat** (jamais en dégradé - contrairement
+  aux documents internes UVSQ, leur vrai site ne l'utilise qu'en couleur
+  pleine) pour la barre d'en-tête des cartes, repris du bandeau des modules
+  de leur page d'accueil.
+- Pied de page en prune plein (`#69043C`) : c'est ainsi que leur vrai site
+  signale l'affiliation à l'Université Paris-Saclay.
+- En-tête pleine largeur avec logo en haut à gauche sur fond blanc, comme sur
+  leur vrai site - sans aucun lien de navigation cliquable (ce service n'est
+  pas un portail officiel de l'université).
+- Thème clair forcé (`color-scheme: light`, pas de variante sombre) : leur
+  vrai site n'a pas de mode sombre, en avoir un ici casserait la fidélité au
+  rendu réel plutôt que de l'améliorer.
+- Repli Century Gothic/Avenir Next pour Gotham (police propriétaire UVSQ,
+  non incluse ici faute de licence).
+
+Utilise [`public/blason-uvsq-paris-saclay.png`](./public/blason-uvsq-paris-saclay.png)
+(copie de `branding/2025_BLASON_UVSQ.png`) : leur charte impose que le logo
+UVSQ n'apparaisse jamais seul, toujours accompagné du bandeau « université
+Paris-Saclay ». Ce dossier reproduit la même logique d'inscription
+(`/api/register`, `/api/unregister` en relatif, même origine) que la version
+à la racine - seuls les couleurs/police/logo/mise en page changent.
+
+C'est un fichier statique comme les autres : le copier suffit, aucune
+configuration Caddy supplémentaire (c'est un simple sous-dossier du même
+`root`) - voir la commande de copie dans la section précédente.
 
 ## Licence
 

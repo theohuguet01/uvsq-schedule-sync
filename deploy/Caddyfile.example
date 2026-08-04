@@ -7,6 +7,9 @@
 
 edt.upsclay.thuguet.fr {
 	root * /var/www/edt.upsclay.thuguet.fr
+	# Sert aussi /uvsq/ (variante de charte graphique, voir public/uvsq/) :
+	# aucune configuration Caddy supplémentaire requise, c'est un simple
+	# sous-dossier du même root.
 	file_server
 
 	# Le calendrier est déjà protégé par un chemin secret (token) : on évite
@@ -16,6 +19,23 @@ edt.upsclay.thuguet.fr {
 	@ics path *.ics
 	header @ics Content-Type "text/calendar; charset=utf-8"
 	header @ics Cache-Control "public, max-age=300"
+
+	# Auto-inscription et suppression (public/uvsq/inscription.html et
+	# confidentialite.html, servis en statique par le file_server ci-dessus) :
+	# les formulaires appellent /api/register et /api/unregister en relatif,
+	# donc même origine que la page - proxifiés vers uvsq-schedule-register.service
+	# qui n'écoute qu'en local (127.0.0.1), jamais exposé directement.
+	reverse_proxy /api/register 127.0.0.1:8787
+	reverse_proxy /api/unregister 127.0.0.1:8787
+
+	# Page 404 personnalisée (public/404.html) plutôt que la page d'erreur par
+	# défaut de Caddy : ne révèle rien de plus qu'un 404 générique (un token
+	# inconnu doit rester indiscernable d'une page qui n'existe pas), tout en
+	# restant cohérente avec le reste du site.
+	handle_errors {
+		rewrite * /404.html
+		file_server
+	}
 
 	log {
 		output file /var/log/caddy/edt.upsclay.thuguet.fr.access.log

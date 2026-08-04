@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="icon" type="image/png" href="/blason-uvsq-paris-saclay.png">
+<title>Confidentialité - EDT UVSQ</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #ffffff;
+    --fg: #17191b;
+    --muted: #6F6F6E;
+    --border: #d7dee1;
+    --uvsq-teal: #0092BB;
+    /* Bleu institutionnel plus foncé (uvsq-couleurs.pdf) : réservé au texte
+       (liens) - le cyan clair ci-dessus ne passe pas le contraste AA avec du
+       texte sur fond blanc (3.6:1 au lieu de 4.5:1 minimum). */
+    --uvsq-teal-text: #007ba4;
+    --uvsq-prune: #69043C;
+    --error-bg: #fbeae8;
+    --error-fg: #8a2a1f;
+    --success-bg: #eef6e4;
+    --success-fg: #3c5a17;
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Century Gothic", "Avenir Next", "Segoe UI", sans-serif;
+  }
+
+  .site-header {
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .site-header .logo {
+    height: 40px;
+    width: auto;
+    display: block;
+  }
+
+  main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+
+  article {
+    width: min(92vw, 640px);
+  }
+
+  h1 {
+    font-size: 1.4rem;
+    margin: 0 0 4px;
+  }
+
+  .lead {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0 0 24px;
+  }
+
+  h2 {
+    font-size: 1rem;
+    margin: 28px 0 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  h2:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  p, li {
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  ul {
+    padding-left: 20px;
+    margin: 8px 0;
+  }
+
+  a {
+    color: var(--uvsq-teal-text);
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 28px;
+    font-size: 0.85rem;
+  }
+
+  .delete-form {
+    margin-top: 12px;
+  }
+
+  .delete-form label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--muted);
+    margin: 0 0 4px;
+  }
+
+  .delete-form input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 16px;
+    font-family: inherit;
+  }
+
+  .delete-form button {
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    padding: 9px 18px;
+    margin-top: 10px;
+    background: var(--uvsq-prune);
+    color: #fff;
+  }
+
+  .delete-form button:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .message {
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    margin-top: 12px;
+  }
+
+  .message.error {
+    background: var(--error-bg);
+    color: var(--error-fg);
+  }
+
+  .message.success {
+    background: var(--success-bg);
+    color: var(--success-fg);
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  footer {
+    text-align: center;
+    padding: 10px;
+    font-size: 0.8rem;
+    background: var(--uvsq-prune);
+    color: #e9d3de;
+  }
+
+  footer a {
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <img class="logo" src="/blason-uvsq-paris-saclay.png" alt="UVSQ - Université Paris-Saclay">
+  </header>
+  <main>
+    <article>
+      <h1>Confidentialité et données personnelles</h1>
+      <p class="lead">Cette page explique simplement ce que ce service fait de vos données. Ce n'est pas un modèle juridique standard : elle décrit ce que le code de ce projet fait réellement.</p>
+
+      <h2>Responsable du traitement</h2>
+      <p>Ce site n'est pas un service officiel de l'UVSQ ni de l'Université Paris-Saclay : c'est un projet personnel/étudiant. Au sens de la loi n° 78-17 du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés (voir les articles cités plus bas), le responsable du traitement des données décrites ci-dessous est <strong>Théo HUGUET</strong>, qui développe et héberge ce service à partir des données publiques d'<code>edt.uvsq.fr</code>. Pour toute question ou demande, le contact se fait via le dépôt GitHub du projet (lien en pied de page).</p>
+
+      <h2>Cookies</h2>
+      <p>Ce site n'utilise aucun cookie, aucun outil de mesure d'audience et aucun stockage dans votre navigateur (pas de <code>localStorage</code> ni de traceur). Rien à accepter ni à refuser.</p>
+
+      <h2>Données collectées lors de l'inscription</h2>
+      <p>Quand vous remplissez le formulaire, sont enregistrés :</p>
+      <ul>
+        <li><strong>Le nom que vous indiquez</strong> (un pseudonyme suffit) - sert uniquement à identifier votre ligne dans le registre technique, n'apparaît jamais dans l'URL de votre calendrier.</li>
+        <li><strong>Le code de formation</strong> que vous indiquez - transmis à l'API publique <code>edt.uvsq.fr</code> pour récupérer l'emploi du temps correspondant.</li>
+        <li><strong>Un token</strong> généré aléatoirement, qui sert de clé secrète dans l'URL de votre calendrier.</li>
+      </ul>
+      <p>Votre adresse IP est utilisée brièvement, en mémoire, pour limiter les tentatives d'inscription abusives (anti-spam) : elle n'est pas conservée dans le registre, mais peut apparaître de façon transitoire dans les journaux techniques du serveur en cas de comportement suspect (comme sur n'importe quel serveur web).</p>
+
+      <h2>Pourquoi et sur quelle base</h2>
+      <p>Ces données ne servent qu'à générer et maintenir à jour votre lien de calendrier personnel - c'est le service que vous demandez explicitement en remplissant le formulaire (base légale : exécution d'une demande à votre initiative).</p>
+
+      <h2>Sécurité</h2>
+      <p>Le responsable du traitement doit prendre « toutes précautions utiles, au regard de la nature des données et des risques présentés par le traitement, pour préserver la sécurité des données et, notamment, empêcher qu'elles soient déformées, endommagées, ou que des tiers non autorisés y aient accès » (<a href="https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000037817729" target="_blank" rel="noopener">article 121 de la loi n° 78-17</a>). Concrètement : le registre n'est accessible qu'au responsable du traitement sur son propre serveur, et votre calendrier n'est consultable qu'avec le lien secret qui vous est propre.</p>
+
+      <h2>Durée de conservation</h2>
+      <p>Les entrées du registre ne sont pas supprimées automatiquement : elles restent tant que vous ne demandez pas leur suppression (voir ci-dessous) ou tant que le service tourne.</p>
+
+      <h2>Vos droits</h2>
+      <p>La loi n° 78-17 vous reconnaît, pour les traitements comme celui-ci, les droits suivants (chaque article renvoie au règlement (UE) 2016/679, le RGPD) :</p>
+      <ul>
+        <li><strong>Droit à l'information</strong> - <a href="https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000043887431" target="_blank" rel="noopener">article 48</a>, qui renvoie aux articles 12 à 14 du RGPD : c'est l'objet de cette page.</li>
+        <li><strong>Droit d'accès</strong> - <a href="https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000043887429" target="_blank" rel="noopener">article 49</a>, qui renvoie à l'article 15 du RGPD.</li>
+        <li><strong>Droit de rectification</strong> - <a href="https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000037823122" target="_blank" rel="noopener">article 50</a>, qui renvoie à l'article 16 du RGPD.</li>
+        <li><strong>Droit à l'effacement</strong> - <a href="https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000037823120" target="_blank" rel="noopener">article 51</a>, qui renvoie à l'article 17 du RGPD : utilisez le formulaire ci-dessous pour l'exercer directement, sans attendre de réponse.</li>
+      </ul>
+      <p>Pour le droit à l'information, d'accès ou de rectification, ouvrez une demande sur le dépôt GitHub du projet (lien en pied de page). Comme ce projet est géré par une seule personne, le délai de traitement dépend de sa disponibilité - au-delà d'un mois sans réponse, vous pouvez saisir la <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>, qui se prononce alors dans un délai de trois semaines (article 51 de la loi n° 78-17).</p>
+
+      <h2>Supprimer vos données</h2>
+      <p>Collez ci-dessous le lien de votre calendrier (celui affiché après votre inscription, en <code>https://</code> ou <code>webcal://</code>) pour supprimer immédiatement votre entrée du registre et votre calendrier publié. Cette action est irréversible et ne nécessite aucune autre vérification : le lien lui-même sert de preuve, puisque vous êtes seul·e à le connaître.</p>
+      <form id="delete-form" class="delete-form" novalidate>
+        <label for="delete-link">Lien de votre calendrier</label>
+        <input type="text" id="delete-link" autocomplete="off" required placeholder="https://.../votre-token/edt.ics">
+        <button type="submit" id="delete-btn">Supprimer mes données</button>
+      </form>
+      <div id="delete-message" class="message" hidden></div>
+
+      <p class="lead">Sources citées : articles 48, 49, 50, 51 et 121 de la loi n° 78-17 du 6 janvier 1978, consultés sur Légifrance (liens ci-dessus, version en vigueur). Cette page a été rédigée avec l'aide d'un assistant IA à partir de ces textes ; elle ne constitue pas un conseil juridique et n'engage que la description du fonctionnement réel du service.</p>
+
+      <a class="back-link" href="inscription.html">← Retour au formulaire d'inscription</a>
+    </article>
+  </main>
+  <footer>
+    © 2026 Théo HUGUET - <a href="https://github.com/theohuguet01/uvsq-schedule-sync">github.com/theohuguet01/uvsq-schedule-sync</a>
+  </footer>
+
+  <script>
+    function showMessage(el, text, kind) {
+      el.textContent = text
+      el.className = 'message' + (kind ? ' ' + kind : '')
+      el.hidden = !text
+    }
+
+    // Le token (32 caractères hexadécimaux, voir src/students.js) peut être
+    // collé seul ou dans une URL complète (https:// ou webcal://) : on
+    // l'extrait dans les deux cas plutôt que d'imposer un format exact.
+    function extractToken(input) {
+      const match = input.trim().match(/[a-f0-9]{16,64}/)
+      return match ? match[0] : null
+    }
+
+    document.getElementById('delete-form').addEventListener('submit', async (event) => {
+      event.preventDefault()
+      const messageEl = document.getElementById('delete-message')
+      const deleteBtn = document.getElementById('delete-btn')
+      showMessage(messageEl, '')
+
+      const token = extractToken(document.getElementById('delete-link').value)
+      if (!token) {
+        showMessage(messageEl, 'Lien invalide : collez le lien complet reçu après inscription.', 'error')
+        return
+      }
+
+      if (!window.confirm('Supprimer définitivement votre inscription et votre calendrier publié ? Cette action est irréversible.')) {
+        return
+      }
+
+      deleteBtn.disabled = true
+      try {
+        const response = await fetch('/api/unregister', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        })
+        const data = await response.json().catch(() => ({}))
+
+        if (!response.ok) {
+          showMessage(messageEl, data.error || 'Une erreur est survenue. Veuillez réessayer ultérieurement.', 'error')
+          return
+        }
+
+        showMessage(messageEl, 'Vos données ont été supprimées.', 'success')
+        document.getElementById('delete-form').hidden = true
+      } catch {
+        showMessage(messageEl, 'Impossible de contacter le serveur. Veuillez réessayer ultérieurement.', 'error')
+      } finally {
+        deleteBtn.disabled = false
+      }
+    })
+  </script>
+</body>
+</html>

@@ -79,7 +79,13 @@ test('rejette une formation manquante', async (t) => {
   const { formation, ...withoutFormation } = VALID_STUDENT
   const path = await withRegistry(t, JSON.stringify([withoutFormation]))
 
-  await assert.rejects(() => loadStudents(path), /"formation" est obligatoire/)
+  await assert.rejects(() => loadStudents(path), /"formation" doit être un code alphanumérique/)
+})
+
+test('rejette un code de formation avec des caractères non alphanumériques', async (t) => {
+  const path = await withRegistry(t, JSON.stringify([{ ...VALID_STUDENT, formation: 'MY;IRS1&& rm -rf' }]))
+
+  await assert.rejects(() => loadStudents(path), /"formation" doit être un code alphanumérique/)
 })
 
 test('rejette des tokens dupliqués', async (t) => {

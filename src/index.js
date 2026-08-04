@@ -3,12 +3,9 @@ import { parseArgs } from 'node:util'
 import { resolve, join } from 'node:path'
 
 import { config, buildStudentConfig } from '../config.js'
-import { fetchSchedule } from './fetchSchedule.js'
-import { parseEvent } from './parseEvent.js'
-import { generateIcs } from './generateIcs.js'
 import { writeAtomic } from './writeAtomic.js'
-import { writeFailureStatus, writeSuccessStatus } from './heartbeat.js'
 import { loadStudents } from './students.js'
+import { syncOne } from './sync.js'
 
 export function parseCliArgs(argv) {
   const { values } = parseArgs({
@@ -21,43 +18,6 @@ export function parseCliArgs(argv) {
     },
   })
   return values
-}
-
-// Génère le calendrier d'une seule config (un étudiant, ou l'unique formation
-// en mode mono-utilisateur) : fetch, parsing, écriture, statut. Utilisée à la
-// fois par le mode legacy et par la boucle multi-étudiants.
-async function syncOne(cfg, outPath, statusPath) {
-  try {
-    const rawEvents = await fetchSchedule(cfg)
-    console.error(`[index] ${rawEvents.length} événement(s) reçu(s) depuis l'API (${cfg.formation})`)
-
-    const events = rawEvents
-      .map((rawEvent) => parseEvent(rawEvent, cfg.formation))
-      .filter((event) => event !== null)
-    console.error(`[index] ${events.length} événement(s) valide(s) après nettoyage (${cfg.formation})`)
-
-    const ics = generateIcs(events, cfg)
-
-    if (outPath) {
-      await writeAtomic(outPath, ics)
-      console.error(`[index] Calendrier écrit dans ${outPath}`)
-    } else {
-      process.stdout.write(ics)
-    }
-
-    if (statusPath) {
-      await writeSuccessStatus(statusPath, { formation: cfg.formation, eventCount: events.length })
-    }
-
-    return { eventCount: events.length }
-  } catch (error) {
-    if (statusPath) {
-      await writeFailureStatus(statusPath, { formation: cfg.formation, error }).catch((statusError) => {
-        console.error(`[index] Impossible d'écrire le fichier de statut : ${statusError.message}`)
-      })
-    }
-    throw error
-  }
 }
 
 // Mode multi-étudiants : un fetch/génération/statut par étudiant du registre,
