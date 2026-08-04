@@ -330,8 +330,12 @@ en placeholder et que `.service` le charge via `EnvironmentFile`.
 
 ### Page d'accueil du domaine
 
-[`public/index.html`](./public/index.html) affiche le blason UVSQ, pour que
-la racine du domaine (sans le token) ne tombe pas sur une 404. Contrairement à
+[`public/index.html`](./public/index.html) affiche directement le formulaire
+d'auto-inscription (voir [Auto-inscription](#auto-inscription-page-web)) -
+même contenu que [`public/inscription.html`](./public/inscription.html),
+conservé séparément pour qui aurait ce lien précis. Ainsi la racine du domaine
+(sans token) ne tombe pas sur une 404, et un visiteur y arrive directement sur
+l'action utile plutôt qu'une simple page d'atterrissage. Contrairement à
 `edt.ics`, ce n'est pas généré par le service : ce sont des fichiers statiques,
 à copier une seule fois (ou à chaque mise à jour du dépôt) :
 

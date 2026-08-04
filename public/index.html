@@ -8,18 +8,37 @@
 <title>EDT UVSQ</title>
 <style>
   :root {
-    /* Le vrai site n'a pas de mode sombre (blanc partout) : thème clair
-       forcé pour rester fidèle au rendu réel, voir inscription.html. */
+    /* Le vrai site uvsq.fr n'a pas de mode sombre - blanc partout, quel que
+       soit le réglage système. Thème clair forcé pour rester fidèle. */
     color-scheme: light;
-    /* Palette UVSQ, calée sur le vrai site uvsq.fr : teal en aplat (jamais
-       en dégradé) pour la nav/les bandeaux de module, prune réservé au pied
-       de page (affiliation Paris-Saclay). */
+    /* Palette UVSQ (Charte graphique juin 2024 + uvsq-couleurs.pdf). */
     --bg: #ffffff;
     --fg: #17191b;
     --muted: #6F6F6E;
-    --card-bg: transparent;
+    --card-bg: #f4f7f8;
+    --border: #d7dee1;
+    /* Le vrai site uvsq.fr utilise le teal en aplat (jamais en dégradé) pour
+       sa barre de navigation et les bandeaux d'en-tête de ses modules de
+       page d'accueil ("Bienvenue...", "Trouver une formation"...), et réserve
+       le prune (affiliation Paris-Saclay) au bandeau de pied de page. */
     --uvsq-teal: #0092BB;
+    /* Bleu institutionnel plus foncé (uvsq-couleurs.pdf, "Bleus
+       institutionnels") : réservé aux surfaces qui portent du texte - le
+       cyan clair ci-dessus ne passe pas le contraste AA (3.6:1) avec du
+       texte blanc, ce bleu le fait (4.8:1). */
+    --uvsq-teal-text: #007ba4;
     --uvsq-prune: #69043C;
+    --accent-fg: #ffffff;
+    /* Corail/anis : couleurs secondaires de leur palette, réutilisées ici
+       pour les états d'erreur/succès plutôt que le rouge/vert générique. */
+    --error-bg: #fbeae8;
+    --error-fg: #8a2a1f;
+    --success-bg: #eef6e4;
+    --success-fg: #3c5a17;
+    /* Avertissement (calendrier généré mais vide) : distinct de l'erreur et
+       du succès, palette jaune/orangé standard. */
+    --warning-bg: #fdf3d9;
+    --warning-fg: #7a5a06;
   }
 
   html, body {
@@ -27,17 +46,16 @@
     margin: 0;
   }
 
-  /* Pied de page ancré en bas de la fenêtre, logo centré dans l'espace
-     restant. */
+  /* Pied de page ancré en bas de la fenêtre (footer collé au fond même si
+     le contenu est court), avec la carte centrée dans l'espace restant. */
   body {
     display: flex;
     flex-direction: column;
     min-height: 100dvh;
     background: var(--bg);
     color: var(--fg);
-    /* Gotham est la police officielle UVSQ (non libre, non chargée ici) :
-       Century Gothic/Avenir Next sont des géométriques de forme proche,
-       Segoe UI ferme la liste comme filet de sécurité système. */
+    /* Gotham (police officielle UVSQ) n'est pas une police libre, on n'en
+       charge pas de copie ici. */
     font-family: "Century Gothic", "Avenir Next", "Segoe UI", sans-serif;
   }
 
@@ -46,42 +64,226 @@
      service n'est pas un portail officiel de l'université). */
   .site-header {
     padding: 10px 20px;
-    border-bottom: 1px solid #e5e9eb;
+    border-bottom: 1px solid var(--border);
   }
 
   .site-header .logo {
     height: 40px;
     width: auto;
-    margin: 0;
+    display: block;
   }
 
+  /* Espacements resserrés à dessein : la carte doit tenir dans une fenêtre
+     standard sans faire apparaître de barre de défilement. */
   main {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px 24px;
+    padding: 14px 24px;
   }
 
-  .logo-card {
+  .card {
+    width: min(92vw, 440px);
     background: var(--card-bg);
-    padding: min(6vw, 32px);
-    border-radius: 16px;
-    /* Bandeau teal en aplat : motif des bandeaux de module sur uvsq.fr. */
-    border-bottom: 5px solid var(--uvsq-teal);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
   }
 
-  .logo {
-    width: min(60vw, 320px);
-    height: auto;
+  .card-body {
+    padding: 12px 24px 16px;
+  }
+
+  /* Bandeau teal en aplat, titre en blanc : le motif d'en-tête des modules
+     de la page d'accueil uvsq.fr ("Bienvenue aux étudiantes...", "Trouver
+     une formation", "Agenda"), pas de dégradé sur le vrai site. */
+  .title-block {
+    background: var(--uvsq-teal-text);
+    padding: 10px 24px 12px;
+  }
+
+  .title-block h1 {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+
+  .title-block .subtitle {
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  /* Étiquettes en petites capitales : hiérarchie plus stricte entre le
+     libellé du champ et sa valeur, convention courante des formulaires
+     administratifs français. */
+  label {
     display: block;
-    margin: 0 auto;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--muted);
+    margin: 12px 0 4px;
   }
 
-  /* Le vrai footer uvsq.fr est en prune plein (affiliation Paris-Saclay). */
+  .required {
+    color: var(--uvsq-prune);
+  }
+
+  .required-note {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 4px 0 0;
+  }
+
+  .hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 4px 0 0;
+  }
+
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  legend {
+    padding: 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg);
+    /* 16px minimum : en dessous, Safari iOS zoome automatiquement la page
+       au focus du champ, ce qui est perturbant sur mobile. */
+    font-size: 16px;
+    font-family: inherit;
+  }
+
+  input[type="text"]:focus {
+    outline: 2px solid var(--uvsq-teal);
+    outline-offset: 1px;
+  }
+
+  .honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  button {
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    padding: 9px 18px;
+  }
+
+  /* Zone d'action séparée par un filet, comme sur un formulaire administratif
+     (les boutons ne flottent pas directement à la suite des champs). */
+  .form-actions {
+    border-top: 1px solid var(--border);
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+
+  .btn-primary {
+    background: var(--uvsq-teal-text);
+    color: var(--accent-fg);
+    width: 100%;
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid var(--border);
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* Mention RGPD au point de collecte (article 13) : brève, avec lien vers
+     le détail plutôt que d'expliquer ici tout le traitement. */
+  .privacy-note {
+    font-size: 0.74rem;
+    color: var(--muted);
+    margin: 10px 0 0;
+  }
+
+  .privacy-note a {
+    color: inherit;
+  }
+
+  .message {
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    margin-top: 16px;
+  }
+
+  .message.error {
+    background: var(--error-bg);
+    color: var(--error-fg);
+  }
+
+  .message.success {
+    background: var(--success-bg);
+    color: var(--success-fg);
+  }
+
+  .message.warning {
+    background: var(--warning-bg);
+    color: var(--warning-fg);
+  }
+
+  .confirm-row {
+    font-size: 0.9rem;
+    margin: 6px 0;
+  }
+
+  .confirm-row span {
+    color: var(--muted);
+  }
+
+  .link-box {
+    word-break: break-all;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.82rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    margin-top: 8px;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  /* Le vrai footer uvsq.fr est en prune plein (affiliation Paris-Saclay),
+     texte clair - c'est la seule apparition du prune sur cette page. */
   footer {
     text-align: center;
-    padding: 16px;
+    padding: 10px;
     font-size: 0.8rem;
     background: var(--uvsq-prune);
     color: #e9d3de;
@@ -97,12 +299,191 @@
     <img class="logo" src="/blason-uvsq-paris-saclay.png" alt="UVSQ - Université Paris-Saclay">
   </header>
   <main>
-    <div class="logo-card">
-      <img class="logo" src="/blason-uvsq-paris-saclay.png" alt="UVSQ - Université Paris-Saclay">
+    <div class="card">
+
+      <section id="step-form">
+        <div class="title-block">
+          <h1>Récupérer votre emploi du temps UVSQ</h1>
+          <p class="subtitle">Générez votre lien de calendrier personnel, à ajouter dans Apple Calendrier, Google Agenda ou Outlook.</p>
+        </div>
+        <div class="card-body">
+          <form id="register-form" novalidate>
+            <fieldset>
+              <legend>Tous les champs sont obligatoires.</legend>
+
+              <label for="name">Nom <span class="required" aria-hidden="true">*</span></label>
+              <input type="text" id="name" name="name" autocomplete="off" required maxlength="60" placeholder="ex. Alice Dupont">
+              <p class="hint">Sert uniquement à identifier votre ligne dans le registre interne : n'apparaît pas dans l'URL générée.</p>
+
+              <label for="formation">Code de formation <span class="required" aria-hidden="true">*</span></label>
+              <input type="text" id="formation" name="formation" autocomplete="off" required maxlength="40" placeholder="ex. MYIRS1_888">
+              <p class="hint">Visible dans l'URL de <code>edt.uvsq.fr</code> une fois votre emploi du temps affiché (paramètre federationIds).</p>
+
+              <div class="honeypot" aria-hidden="true">
+                <label for="website">Site web</label>
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+              </div>
+            </fieldset>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-primary" id="submit-btn">Continuer</button>
+              <p class="privacy-note">Les données saisies ci-dessus sont enregistrées pour générer votre lien de calendrier. Aucun cookie n'est utilisé sur ce site. <a href="confidentialite.html">En savoir plus sur vos données</a>.</p>
+            </div>
+          </form>
+
+          <div id="form-message" class="message error" hidden></div>
+        </div>
+      </section>
+
+      <section id="step-confirm" hidden>
+        <div class="title-block">
+          <h1>Confirmez votre inscription</h1>
+          <p class="subtitle">Vérifiez les informations avant de générer votre lien : elles ne pourront plus être modifiées ensuite (un nouveau nom génère un nouveau lien).</p>
+        </div>
+        <div class="card-body">
+          <p class="confirm-row"><span>Nom :</span> <strong id="confirm-name"></strong></p>
+          <p class="confirm-row"><span>Formation :</span> <strong id="confirm-formation"></strong></p>
+
+          <div class="form-actions">
+            <button type="button" class="btn-primary" id="confirm-btn">Confirmer et générer le lien</button>
+            <button type="button" class="btn-secondary" id="edit-btn">Modifier</button>
+          </div>
+
+          <div id="confirm-message" class="message error" hidden></div>
+        </div>
+      </section>
+
+      <section id="step-result" hidden>
+        <div class="title-block">
+          <h1>C'est prêt</h1>
+        </div>
+        <div class="card-body">
+          <div id="result-message" class="message" hidden></div>
+
+          <label>Lien à ajouter dans votre calendrier (webcal, mise à jour automatique)</label>
+          <div class="link-box" id="webcal-link"></div>
+
+          <label>Lien de secours (import manuel, https)</label>
+          <div class="link-box" id="https-link"></div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="copy-btn">Copier le lien webcal</button>
+          </div>
+        </div>
+      </section>
+
     </div>
   </main>
   <footer>
     © 2026 Théo HUGUET - <a href="https://github.com/theohuguet01/uvsq-schedule-sync">github.com/theohuguet01/uvsq-schedule-sync</a> - <a href="confidentialite.html">Confidentialité</a>
   </footer>
+
+  <script>
+    const stepForm = document.getElementById('step-form')
+    const stepConfirm = document.getElementById('step-confirm')
+    const stepResult = document.getElementById('step-result')
+
+    const form = document.getElementById('register-form')
+    const formMessage = document.getElementById('form-message')
+    const confirmMessage = document.getElementById('confirm-message')
+
+    let pending = null
+
+    function showMessage(el, text) {
+      el.textContent = text
+      el.hidden = !text
+    }
+
+    function showStep(step) {
+      stepForm.hidden = step !== 'form'
+      stepConfirm.hidden = step !== 'confirm'
+      stepResult.hidden = step !== 'result'
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault()
+      showMessage(formMessage, '')
+
+      const name = document.getElementById('name').value.trim()
+      const formation = document.getElementById('formation').value.trim()
+      const website = document.getElementById('website').value
+
+      if (!name || !formation) {
+        showMessage(formMessage, 'Merci de renseigner votre nom et votre code de formation.')
+        return
+      }
+
+      pending = { name, formation, website }
+      document.getElementById('confirm-name').textContent = name
+      document.getElementById('confirm-formation').textContent = formation
+      showMessage(confirmMessage, '')
+      showStep('confirm')
+    })
+
+    document.getElementById('edit-btn').addEventListener('click', () => {
+      showStep('form')
+    })
+
+    document.getElementById('confirm-btn').addEventListener('click', async () => {
+      const confirmBtn = document.getElementById('confirm-btn')
+      confirmBtn.disabled = true
+      showMessage(confirmMessage, '')
+
+      try {
+        const response = await fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(pending),
+        })
+        const data = await response.json().catch(() => ({}))
+
+        if (!response.ok) {
+          showMessage(confirmMessage, data.error || 'Une erreur est survenue. Veuillez réessayer ultérieurement.')
+          confirmBtn.disabled = false
+          return
+        }
+
+        document.getElementById('webcal-link').textContent = data.webcalUrl
+        document.getElementById('https-link').textContent = data.url
+
+        const resultMessage = document.getElementById('result-message')
+        resultMessage.classList.remove('success', 'warning', 'error')
+        if (!data.synced) {
+          resultMessage.classList.add('error')
+          showMessage(resultMessage, 'Votre lien est créé, mais votre emploi du temps n\'a pas encore pu être récupéré (vérifiez votre code de formation) : une nouvelle tentative sera effectuée automatiquement.')
+        } else if (data.eventCount === 0) {
+          // L'API UVSQ ne renvoie pas d'erreur pour un code de formation
+          // inconnu, juste 0 événement : sans cet avertissement, l'étudiant
+          // n'aurait aucun moyen de savoir que son calendrier est vide.
+          resultMessage.classList.add('warning')
+          showMessage(resultMessage, 'Votre lien est créé, mais votre calendrier ne contient aucun événement : vérifiez que le code de formation est correct.')
+        } else {
+          resultMessage.classList.add('success')
+          showMessage(resultMessage, 'Votre calendrier est prêt : abonnez-vous avec le lien ci-dessous.')
+        }
+
+        showStep('result')
+      } catch {
+        showMessage(confirmMessage, 'Impossible de contacter le serveur. Veuillez réessayer ultérieurement.')
+        confirmBtn.disabled = false
+      }
+    })
+
+    document.getElementById('copy-btn').addEventListener('click', async () => {
+      const text = document.getElementById('webcal-link').textContent
+      try {
+        await navigator.clipboard.writeText(text)
+        const btn = document.getElementById('copy-btn')
+        const original = btn.textContent
+        btn.textContent = 'Copié !'
+        setTimeout(() => {
+          btn.textContent = original
+        }, 1500)
+      } catch {
+        // Presse-papiers indisponible (contexte non sécurisé, permission
+        // refusée...) : le lien reste sélectionnable/copiable à la main.
+      }
+    })
+  </script>
 </body>
 </html>
