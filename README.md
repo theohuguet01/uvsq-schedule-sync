@@ -171,15 +171,12 @@ sans erreur HTTP dans ce cas (voir note plus haut) - le formulaire le détecte
 et affiche un avertissement (`eventCount: 0` dans la réponse de
 `/api/register`) plutôt que de laisser croire que tout s'est bien passé.
 
-Le formulaire recommandé est [`public/uvsq/inscription.html`](./public/uvsq)
-(voir [Variante de charte graphique](#variante-de-charte-graphique-uvsq)) ;
-`public/inscription.html` à la racine est une version neutre plus basique,
-sans les mêmes garde-fous visuels (thème générique, sans en-tête ni page de
-confidentialité dédiée).
+Le formulaire suit la charte graphique de l'UVSQ (voir
+[Charte graphique](#charte-graphique-uvsq)).
 
 ### Suppression des données (droit à l'effacement)
 
-[`public/uvsq/confidentialite.html`](./public/uvsq/confidentialite.html)
+[`public/confidentialite.html`](./public/confidentialite.html)
 inclut un formulaire de suppression en libre-service : coller le lien de
 calendrier reçu à l'inscription suffit à retirer l'entrée du registre et les
 fichiers publiés (`edt.ics` + statut), via `POST /api/unregister`. Le token
@@ -206,11 +203,8 @@ sudo cp deploy/uvsq-schedule-register.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now uvsq-schedule-register.service
 
-# 3. Publier les pages (voir aussi la section Page d'accueil du domaine) :
-#    index.html, inscription.html et confidentialite.html du dossier uvsq/
-sudo cp -r public/uvsq /var/www/edt.upsclay.thuguet.fr/
-sudo cp public/blason-uvsq-paris-saclay.png /var/www/edt.upsclay.thuguet.fr/
-sudo chown -R uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/uvsq /var/www/edt.upsclay.thuguet.fr/blason-uvsq-paris-saclay.png
+# 3. Publier les pages (voir la section Page d'accueil du domaine, qui
+#    inclut déjà inscription.html et confidentialite.html)
 ```
 
 Vérifier :
@@ -336,18 +330,14 @@ en placeholder et que `.service` le charge via `EnvironmentFile`.
 
 ### Page d'accueil du domaine
 
-[`public/index.html`](./public/index.html) affiche le logo combiné
-ISTY / UVSQ / Université Paris-Saclay centré, pour que la racine du domaine
-(sans le token) ne tombe pas sur une 404. Ce logo tricéphale reflète le
-fonctionnement réel de la formation : cours dispensés à l'ISTY (école
-d'ingénieurs de l'UVSQ), diplôme délivré par l'Université Paris-Saclay
-(master mutualisé). Contrairement à `edt.ics`, ce n'est pas généré par le
-service : c'est un fichier statique, à copier une seule fois (ou à chaque
-mise à jour du dépôt) :
+[`public/index.html`](./public/index.html) affiche le blason UVSQ, pour que
+la racine du domaine (sans le token) ne tombe pas sur une 404. Contrairement à
+`edt.ics`, ce n'est pas généré par le service : ce sont des fichiers statiques,
+à copier une seule fois (ou à chaque mise à jour du dépôt) :
 
 ```bash
-sudo cp public/index.html public/404.html public/logo-isty-uvsq-paris-saclay.png public/robots.txt /var/www/edt.upsclay.thuguet.fr/
-sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/index.html /var/www/edt.upsclay.thuguet.fr/404.html /var/www/edt.upsclay.thuguet.fr/logo-isty-uvsq-paris-saclay.png /var/www/edt.upsclay.thuguet.fr/robots.txt
+sudo cp public/index.html public/404.html public/inscription.html public/confidentialite.html public/blason-uvsq-paris-saclay.png public/robots.txt /var/www/edt.upsclay.thuguet.fr/
+sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/index.html /var/www/edt.upsclay.thuguet.fr/404.html /var/www/edt.upsclay.thuguet.fr/inscription.html /var/www/edt.upsclay.thuguet.fr/confidentialite.html /var/www/edt.upsclay.thuguet.fr/blason-uvsq-paris-saclay.png /var/www/edt.upsclay.thuguet.fr/robots.txt
 ```
 
 [`public/404.html`](./public/404.html) est servi pour toute page introuvable
@@ -356,12 +346,18 @@ sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/index.html /
 token de calendrier inconnu, qui reste ainsi indiscernable d'une page qui
 n'existe pas.
 
-`public/inscription.html` (voir [Auto-inscription](#auto-inscription-page-web))
-se copie de la même façon, uniquement si le serveur d'inscription est déployé.
+`public/inscription.html` et `public/confidentialite.html` (voir
+[Auto-inscription](#auto-inscription-page-web) et
+[Suppression des données](#suppression-des-données-droit-à-leffacement)) ne
+sont utiles que si le serveur d'inscription est déployé - déjà inclus dans la
+commande de copie ci-dessus.
 
-Le fichier logo provient du dossier `branding/` (assets officiels fournis
-directement par l'établissement) et n'est pas modifié ici (pas de
-recadrage, de changement de couleur).
+Le fichier logo ([`public/blason-uvsq-paris-saclay.png`](./public/blason-uvsq-paris-saclay.png),
+copie de `branding/2025_BLASON_UVSQ.png`) provient du dossier `branding/`
+(assets officiels fournis directement par l'établissement) et n'est pas
+modifié ici (pas de recadrage, de changement de couleur). Leur charte impose
+que le logo UVSQ n'apparaisse jamais seul, toujours accompagné du bandeau
+« université Paris-Saclay ».
 
 Le site n'est volontairement pas destiné à être indexé par les moteurs de
 recherche (calendrier personnel) : `public/robots.txt` (`Disallow: /`), une
@@ -371,15 +367,13 @@ site (y compris `edt.ics`, qui n'a pas de balise `<meta>` puisque ce n'est
 pas du HTML) - trois couches redondantes plutôt qu'une seule, en plus du
 chemin secret déjà en place.
 
-### Variante de charte graphique UVSQ
+### Charte graphique UVSQ
 
-En plus de la page d'accueil et du formulaire d'inscription à la racine
-(logo ISTY/UVSQ/Paris-Saclay, thème neutre), [`public/uvsq/`](./public/uvsq)
-décline les mêmes pages sous la charte graphique de l'**UVSQ**, calée à la
-fois sur leur charte graphique PDF (couleurs, typographie) et sur le rendu
-réel de [uvsq.fr](https://www.uvsq.fr) (mise en page, usage effectif des
-couleurs - assez différent des gabarits internes PowerPoint/newsletters de
-leur charte) :
+Toutes les pages statiques (page d'accueil, inscription, confidentialité,
+404) suivent la charte graphique de l'**UVSQ**, calée à la fois sur leur
+charte graphique PDF (couleurs, typographie) et sur le rendu réel de
+[uvsq.fr](https://www.uvsq.fr) (mise en page, usage effectif des couleurs -
+assez différent des gabarits internes PowerPoint/newsletters de leur charte) :
 
 - Teal institutionnel `#0092BB` **en aplat** (jamais en dégradé - contrairement
   aux documents internes UVSQ, leur vrai site ne l'utilise qu'en couleur
@@ -395,17 +389,6 @@ leur charte) :
   rendu réel plutôt que de l'améliorer.
 - Repli Century Gothic/Avenir Next pour Gotham (police propriétaire UVSQ,
   non incluse ici faute de licence).
-
-Utilise [`public/blason-uvsq-paris-saclay.png`](./public/blason-uvsq-paris-saclay.png)
-(copie de `branding/2025_BLASON_UVSQ.png`) : leur charte impose que le logo
-UVSQ n'apparaisse jamais seul, toujours accompagné du bandeau « université
-Paris-Saclay ». Ce dossier reproduit la même logique d'inscription
-(`/api/register`, `/api/unregister` en relatif, même origine) que la version
-à la racine - seuls les couleurs/police/logo/mise en page changent.
-
-C'est un fichier statique comme les autres : le copier suffit, aucune
-configuration Caddy supplémentaire (c'est un simple sous-dossier du même
-`root`) - voir la commande de copie dans la section précédente.
 
 ## Licence
 

@@ -7,9 +7,6 @@
 
 edt.upsclay.thuguet.fr {
 	root * /var/www/edt.upsclay.thuguet.fr
-	# Sert aussi /uvsq/ (variante de charte graphique, voir public/uvsq/) :
-	# aucune configuration Caddy supplémentaire requise, c'est un simple
-	# sous-dossier du même root.
 	file_server
 
 	# Le calendrier est déjà protégé par un chemin secret (token) : on évite
@@ -20,7 +17,7 @@ edt.upsclay.thuguet.fr {
 	header @ics Content-Type "text/calendar; charset=utf-8"
 	header @ics Cache-Control "public, max-age=300"
 
-	# Auto-inscription et suppression (public/uvsq/inscription.html et
+	# Auto-inscription et suppression (public/inscription.html et
 	# confidentialite.html, servis en statique par le file_server ci-dessus) :
 	# les formulaires appellent /api/register et /api/unregister en relatif,
 	# donc même origine que la page - proxifiés vers uvsq-schedule-register.service

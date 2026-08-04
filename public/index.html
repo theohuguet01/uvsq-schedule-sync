@@ -4,26 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<link rel="icon" type="image/png" href="/logo-isty-uvsq-paris-saclay.png">
+<link rel="icon" type="image/png" href="/blason-uvsq-paris-saclay.png">
 <title>EDT UVSQ</title>
 <style>
   :root {
-    color-scheme: light dark;
+    /* Le vrai site n'a pas de mode sombre (blanc partout) : thème clair
+       forcé pour rester fidèle au rendu réel, voir inscription.html. */
+    color-scheme: light;
+    /* Palette UVSQ, calée sur le vrai site uvsq.fr : teal en aplat (jamais
+       en dégradé) pour la nav/les bandeaux de module, prune réservé au pied
+       de page (affiliation Paris-Saclay). */
     --bg: #ffffff;
-    --fg: #1a1a1a;
-    --muted: #6b6b6b;
+    --fg: #17191b;
+    --muted: #6F6F6E;
     --card-bg: transparent;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0d0d0d;
-      --fg: #f0f0f0;
-      --muted: #9a9a9a;
-      /* Le logo contient du texte noir/gris sur fond transparent : sans
-         carte claire derrière, il perd tout contraste sur un fond sombre. */
-      --card-bg: #ffffff;
-    }
+    --uvsq-teal: #0092BB;
+    --uvsq-prune: #69043C;
   }
 
   html, body {
@@ -31,13 +27,32 @@
     margin: 0;
   }
 
+  /* Pied de page ancré en bas de la fenêtre, logo centré dans l'espace
+     restant. */
   body {
     display: flex;
     flex-direction: column;
-    min-height: 100%;
+    min-height: 100dvh;
     background: var(--bg);
     color: var(--fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    /* Gotham est la police officielle UVSQ (non libre, non chargée ici) :
+       Century Gothic/Avenir Next sont des géométriques de forme proche,
+       Segoe UI ferme la liste comme filet de sécurité système. */
+    font-family: "Century Gothic", "Avenir Next", "Segoe UI", sans-serif;
+  }
+
+  /* En-tête pleine largeur, logo en haut à gauche sur fond blanc : reprend
+     la structure du vrai site uvsq.fr, sans les liens de navigation (ce
+     service n'est pas un portail officiel de l'université). */
+  .site-header {
+    padding: 10px 20px;
+    border-bottom: 1px solid #e5e9eb;
+  }
+
+  .site-header .logo {
+    height: 40px;
+    width: auto;
+    margin: 0;
   }
 
   main {
@@ -45,41 +60,49 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 40px 24px;
   }
 
   .logo-card {
     background: var(--card-bg);
     padding: min(6vw, 32px);
     border-radius: 16px;
+    /* Bandeau teal en aplat : motif des bandeaux de module sur uvsq.fr. */
+    border-bottom: 5px solid var(--uvsq-teal);
   }
 
   .logo {
-    width: min(90vw, 640px);
+    width: min(60vw, 320px);
     height: auto;
     display: block;
+    margin: 0 auto;
   }
 
+  /* Le vrai footer uvsq.fr est en prune plein (affiliation Paris-Saclay). */
   footer {
     text-align: center;
     padding: 16px;
     font-size: 0.8rem;
-    color: var(--muted);
+    background: var(--uvsq-prune);
+    color: #e9d3de;
   }
 
   footer a {
-    color: inherit;
+    color: #fff;
   }
 </style>
 </head>
 <body>
+  <header class="site-header">
+    <img class="logo" src="/blason-uvsq-paris-saclay.png" alt="UVSQ - Université Paris-Saclay">
+  </header>
   <main>
     <div class="logo-card">
-      <img class="logo" src="/logo-isty-uvsq-paris-saclay.png" alt="ISTY - UVSQ - Université Paris-Saclay">
+      <img class="logo" src="/blason-uvsq-paris-saclay.png" alt="UVSQ - Université Paris-Saclay">
     </div>
   </main>
   <footer>
-    © 2026 Théo HUGUET - <a href="https://github.com/theohuguet01/uvsq-schedule-sync">github.com/theohuguet01/uvsq-schedule-sync</a> - <a href="/uvsq/confidentialite.html">Confidentialité</a>
+    © 2026 Théo HUGUET - <a href="https://github.com/theohuguet01/uvsq-schedule-sync">github.com/theohuguet01/uvsq-schedule-sync</a> - <a href="confidentialite.html">Confidentialité</a>
   </footer>
 </body>
 </html>

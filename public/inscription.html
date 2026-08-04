@@ -4,46 +4,41 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<link rel="icon" type="image/png" href="/logo-isty-uvsq-paris-saclay.png">
+<link rel="icon" type="image/png" href="/blason-uvsq-paris-saclay.png">
 <title>Inscription - EDT UVSQ</title>
 <style>
   :root {
-    color-scheme: light dark;
+    /* Le vrai site uvsq.fr n'a pas de mode sombre - blanc partout, quel que
+       soit le réglage système. Thème clair forcé pour rester fidèle. */
+    color-scheme: light;
+    /* Palette UVSQ (Charte graphique juin 2024 + uvsq-couleurs.pdf). */
     --bg: #ffffff;
-    --fg: #1a1a1a;
-    --muted: #6b6b6b;
-    --card-bg: #f5f5f7;
-    --border: #d9d9de;
-    --accent: #0a5cff;
+    --fg: #17191b;
+    --muted: #6F6F6E;
+    --card-bg: #f4f7f8;
+    --border: #d7dee1;
+    /* Le vrai site uvsq.fr utilise le teal en aplat (jamais en dégradé) pour
+       sa barre de navigation et les bandeaux d'en-tête de ses modules de
+       page d'accueil ("Bienvenue...", "Trouver une formation"...), et réserve
+       le prune (affiliation Paris-Saclay) au bandeau de pied de page. */
+    --uvsq-teal: #0092BB;
+    /* Bleu institutionnel plus foncé (uvsq-couleurs.pdf, "Bleus
+       institutionnels") : réservé aux surfaces qui portent du texte - le
+       cyan clair ci-dessus ne passe pas le contraste AA (3.6:1) avec du
+       texte blanc, ce bleu le fait (4.8:1). */
+    --uvsq-teal-text: #007ba4;
+    --uvsq-prune: #69043C;
     --accent-fg: #ffffff;
-    --error-bg: #fdecea;
-    --error-fg: #7a1712;
-    --success-bg: #e8f6ec;
-    --success-fg: #1f5c33;
+    /* Corail/anis : couleurs secondaires de leur palette, réutilisées ici
+       pour les états d'erreur/succès plutôt que le rouge/vert générique. */
+    --error-bg: #fbeae8;
+    --error-fg: #8a2a1f;
+    --success-bg: #eef6e4;
+    --success-fg: #3c5a17;
+    /* Avertissement (calendrier généré mais vide) : distinct de l'erreur et
+       du succès, palette jaune/orangé standard. */
     --warning-bg: #fdf3d9;
     --warning-fg: #7a5a06;
-    /* Le logo contient du texte noir/gris sur fond transparent : il lui faut
-       toujours un fond clair dédié derrière lui, que la carte elle-même soit
-       claire ou sombre (voir public/index.html, même logique). */
-    --logo-chip-bg: #ffffff;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0d0d0d;
-      --fg: #f0f0f0;
-      --muted: #9a9a9a;
-      --card-bg: #1a1a1c;
-      --border: #33333a;
-      --accent: #4c8dff;
-      --accent-fg: #0d0d0d;
-      --error-bg: #3a1614;
-      --error-fg: #ffb4ac;
-      --success-bg: #123420;
-      --success-fg: #8fe0ab;
-      --warning-bg: #3a2e0a;
-      --warning-fg: #f0cf6e;
-    }
   }
 
   html, body {
@@ -51,62 +46,97 @@
     margin: 0;
   }
 
+  /* Pied de page ancré en bas de la fenêtre (footer collé au fond même si
+     le contenu est court), avec la carte centrée dans l'espace restant. */
   body {
     display: flex;
     flex-direction: column;
-    min-height: 100%;
+    min-height: 100dvh;
     background: var(--bg);
     color: var(--fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    /* Voir public/index.html : Gotham (police officielle UVSQ) n'est
+       pas une police libre, on n'en charge pas de copie ici. */
+    font-family: "Century Gothic", "Avenir Next", "Segoe UI", sans-serif;
   }
 
+  /* En-tête pleine largeur, logo en haut à gauche sur fond blanc : reprend
+     la structure du vrai site uvsq.fr, sans les liens de navigation (ce
+     service n'est pas un portail officiel de l'université). */
+  .site-header {
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .site-header .logo {
+    height: 40px;
+    width: auto;
+    display: block;
+  }
+
+  /* Espacements resserrés à dessein : la carte doit tenir dans une fenêtre
+     standard sans faire apparaître de barre de défilement. */
   main {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 14px 24px;
   }
 
   .card {
-    width: min(92vw, 460px);
+    width: min(92vw, 440px);
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-  }
-
-  .logo-chip {
-    background: var(--logo-chip-bg);
     border-radius: 10px;
-    padding: 14px;
-    margin: 0 0 20px;
-    display: flex;
-    justify-content: center;
+    overflow: hidden;
   }
 
-  .logo {
-    width: min(100%, 260px);
-    height: auto;
-    display: block;
+  .card-body {
+    padding: 12px 24px 16px;
   }
 
-  h1 {
-    font-size: 1.3rem;
+  /* Bandeau teal en aplat, titre en blanc : le motif d'en-tête des modules
+     de la page d'accueil uvsq.fr ("Bienvenue aux étudiantes...", "Trouver
+     une formation", "Agenda"), pas de dégradé sur le vrai site. */
+  .title-block {
+    background: var(--uvsq-teal-text);
+    padding: 10px 24px 12px;
+  }
+
+  .title-block h1 {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 700;
     margin: 0 0 6px;
   }
 
-  .subtitle {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin: 0 0 24px;
+  .title-block .subtitle {
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.85rem;
+    margin: 0;
   }
 
+  /* Étiquettes en petites capitales : hiérarchie plus stricte entre le
+     libellé du champ et sa valeur, convention courante des formulaires
+     administratifs français. */
   label {
     display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin: 16px 0 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--muted);
+    margin: 12px 0 4px;
+  }
+
+  .required {
+    color: var(--uvsq-prune);
+  }
+
+  .required-note {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 4px 0 0;
   }
 
   .hint {
@@ -115,26 +145,38 @@
     margin: 4px 0 0;
   }
 
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  legend {
+    padding: 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+
   input[type="text"] {
     width: 100%;
     box-sizing: border-box;
-    padding: 10px 12px;
-    border-radius: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
     border: 1px solid var(--border);
     background: var(--bg);
     color: var(--fg);
-    font-size: 0.95rem;
+    /* 16px minimum : en dessous, Safari iOS zoome automatiquement la page
+       au focus du champ, ce qui est perturbant sur mobile. */
+    font-size: 16px;
+    font-family: inherit;
   }
 
   input[type="text"]:focus {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--uvsq-teal);
     outline-offset: 1px;
   }
 
-  /* Champ honeypot : présent dans le DOM et donc rempli par un bot naïf qui
-     complète tous les champs, mais invisible et inatteignable pour un humain
-     (hors écran plutôt que display:none, moins facilement détecté comme
-     "champ caché" par un bot un peu plus soigné). */
   .honeypot {
     position: absolute;
     left: -9999px;
@@ -145,18 +187,25 @@
 
   button {
     font: inherit;
+    font-weight: 700;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 6px;
     border: none;
-    padding: 11px 18px;
-    font-weight: 600;
+    padding: 9px 18px;
+  }
+
+  /* Zone d'action séparée par un filet, comme sur un formulaire administratif
+     (les boutons ne flottent pas directement à la suite des champs). */
+  .form-actions {
+    border-top: 1px solid var(--border);
+    margin-top: 14px;
+    padding-top: 14px;
   }
 
   .btn-primary {
-    background: var(--accent);
+    background: var(--uvsq-teal-text);
     color: var(--accent-fg);
     width: 100%;
-    margin-top: 22px;
   }
 
   .btn-primary:disabled {
@@ -172,8 +221,20 @@
     margin-top: 10px;
   }
 
+  /* Mention RGPD au point de collecte (article 13) : brève, avec lien vers
+     le détail plutôt que d'expliquer ici tout le traitement. */
+  .privacy-note {
+    font-size: 0.74rem;
+    color: var(--muted);
+    margin: 10px 0 0;
+  }
+
+  .privacy-note a {
+    color: inherit;
+  }
+
   .message {
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 10px 12px;
     font-size: 0.85rem;
     margin-top: 16px;
@@ -194,16 +255,6 @@
     color: var(--warning-fg);
   }
 
-  .privacy-note {
-    font-size: 0.74rem;
-    color: var(--muted);
-    margin: 10px 0 0;
-  }
-
-  .privacy-note a {
-    color: inherit;
-  }
-
   .confirm-row {
     font-size: 0.9rem;
     margin: 6px 0;
@@ -217,7 +268,7 @@
     word-break: break-all;
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 10px 12px;
     font-size: 0.82rem;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -228,81 +279,103 @@
     display: none !important;
   }
 
+  /* Le vrai footer uvsq.fr est en prune plein (affiliation Paris-Saclay),
+     texte clair - c'est la seule apparition du prune sur cette page. */
   footer {
     text-align: center;
-    padding: 16px;
+    padding: 10px;
     font-size: 0.8rem;
-    color: var(--muted);
+    background: var(--uvsq-prune);
+    color: #e9d3de;
   }
 
   footer a {
-    color: inherit;
+    color: #fff;
   }
 </style>
 </head>
 <body>
+  <header class="site-header">
+    <img class="logo" src="/blason-uvsq-paris-saclay.png" alt="UVSQ - Université Paris-Saclay">
+  </header>
   <main>
     <div class="card">
 
-      <div class="logo-chip">
-        <img class="logo" src="/logo-isty-uvsq-paris-saclay.png" alt="ISTY - UVSQ - Université Paris-Saclay">
-      </div>
-
       <section id="step-form">
-        <h1>Récupérer son emploi du temps UVSQ</h1>
-        <p class="subtitle">Générez votre lien de calendrier personnel, à ajouter dans Apple Calendrier, Google Agenda ou Outlook.</p>
+        <div class="title-block">
+          <h1>Récupérer votre emploi du temps UVSQ</h1>
+          <p class="subtitle">Générez votre lien de calendrier personnel, à ajouter dans Apple Calendrier, Google Agenda ou Outlook.</p>
+        </div>
+        <div class="card-body">
+          <form id="register-form" novalidate>
+            <fieldset>
+              <legend>Tous les champs sont obligatoires.</legend>
 
-        <form id="register-form" novalidate>
-          <label for="name">Votre nom</label>
-          <input type="text" id="name" name="name" autocomplete="off" required maxlength="60" placeholder="ex. Alice Dupont">
-          <p class="hint">Sert uniquement à identifier votre ligne dans le registre interne : n'apparaît pas dans l'URL générée.</p>
+              <label for="name">Nom <span class="required" aria-hidden="true">*</span></label>
+              <input type="text" id="name" name="name" autocomplete="off" required maxlength="60" placeholder="ex. Alice Dupont">
+              <p class="hint">Sert uniquement à identifier votre ligne dans le registre interne : n'apparaît pas dans l'URL générée.</p>
 
-          <label for="formation">Code de votre formation</label>
-          <input type="text" id="formation" name="formation" autocomplete="off" required maxlength="40" placeholder="ex. MYIRS1_888">
-          <p class="hint">Visible dans l'URL de <code>edt.uvsq.fr</code> une fois votre emploi du temps affiché (paramètre federationIds).</p>
+              <label for="formation">Code de formation <span class="required" aria-hidden="true">*</span></label>
+              <input type="text" id="formation" name="formation" autocomplete="off" required maxlength="40" placeholder="ex. MYIRS1_888">
+              <p class="hint">Visible dans l'URL de <code>edt.uvsq.fr</code> une fois votre emploi du temps affiché (paramètre federationIds).</p>
 
-          <div class="honeypot" aria-hidden="true">
-            <label for="website">Site web</label>
-            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
-          </div>
+              <div class="honeypot" aria-hidden="true">
+                <label for="website">Site web</label>
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+              </div>
+            </fieldset>
 
-          <button type="submit" class="btn-primary" id="submit-btn">Continuer</button>
-          <p class="privacy-note">Les données saisies ci-dessus sont enregistrées pour générer votre lien de calendrier. Aucun cookie n'est utilisé sur ce site. <a href="/uvsq/confidentialite.html">En savoir plus sur vos données</a>.</p>
-        </form>
+            <div class="form-actions">
+              <button type="submit" class="btn-primary" id="submit-btn">Continuer</button>
+              <p class="privacy-note">Les données saisies ci-dessus sont enregistrées pour générer votre lien de calendrier. Aucun cookie n'est utilisé sur ce site. <a href="confidentialite.html">En savoir plus sur vos données</a>.</p>
+            </div>
+          </form>
 
-        <div id="form-message" class="message error" hidden></div>
+          <div id="form-message" class="message error" hidden></div>
+        </div>
       </section>
 
       <section id="step-confirm" hidden>
-        <h1>Confirmez votre inscription</h1>
-        <p class="subtitle">Vérifiez les informations avant de générer votre lien : elles ne pourront plus être modifiées ensuite (un nouveau nom génère un nouveau lien).</p>
+        <div class="title-block">
+          <h1>Confirmez votre inscription</h1>
+          <p class="subtitle">Vérifiez les informations avant de générer votre lien : elles ne pourront plus être modifiées ensuite (un nouveau nom génère un nouveau lien).</p>
+        </div>
+        <div class="card-body">
+          <p class="confirm-row"><span>Nom :</span> <strong id="confirm-name"></strong></p>
+          <p class="confirm-row"><span>Formation :</span> <strong id="confirm-formation"></strong></p>
 
-        <p class="confirm-row"><span>Nom :</span> <strong id="confirm-name"></strong></p>
-        <p class="confirm-row"><span>Formation :</span> <strong id="confirm-formation"></strong></p>
+          <div class="form-actions">
+            <button type="button" class="btn-primary" id="confirm-btn">Confirmer et générer le lien</button>
+            <button type="button" class="btn-secondary" id="edit-btn">Modifier</button>
+          </div>
 
-        <button type="button" class="btn-primary" id="confirm-btn">Confirmer et générer le lien</button>
-        <button type="button" class="btn-secondary" id="edit-btn">Modifier</button>
-
-        <div id="confirm-message" class="message error" hidden></div>
+          <div id="confirm-message" class="message error" hidden></div>
+        </div>
       </section>
 
       <section id="step-result" hidden>
-        <h1>C'est prêt</h1>
-        <div id="result-message" class="message" hidden></div>
+        <div class="title-block">
+          <h1>C'est prêt</h1>
+        </div>
+        <div class="card-body">
+          <div id="result-message" class="message" hidden></div>
 
-        <label>Lien à ajouter dans votre calendrier (webcal, mise à jour automatique)</label>
-        <div class="link-box" id="webcal-link"></div>
+          <label>Lien à ajouter dans votre calendrier (webcal, mise à jour automatique)</label>
+          <div class="link-box" id="webcal-link"></div>
 
-        <label>Lien de secours (import manuel, https)</label>
-        <div class="link-box" id="https-link"></div>
+          <label>Lien de secours (import manuel, https)</label>
+          <div class="link-box" id="https-link"></div>
 
-        <button type="button" class="btn-secondary" id="copy-btn">Copier le lien webcal</button>
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="copy-btn">Copier le lien webcal</button>
+          </div>
+        </div>
       </section>
 
     </div>
   </main>
   <footer>
-    © 2026 Théo HUGUET - <a href="https://github.com/theohuguet01/uvsq-schedule-sync">github.com/theohuguet01/uvsq-schedule-sync</a> - <a href="/uvsq/confidentialite.html">Confidentialité</a>
+    © 2026 Théo HUGUET - <a href="https://github.com/theohuguet01/uvsq-schedule-sync">github.com/theohuguet01/uvsq-schedule-sync</a> - <a href="confidentialite.html">Confidentialité</a>
   </footer>
 
   <script>
