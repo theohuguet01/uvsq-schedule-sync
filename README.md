@@ -38,6 +38,8 @@ d'environnement, sans modifier le code :
 | `UVSQ_FETCH_RETRY_DELAY_MS` | `2000` | Délai entre tentatives (ms) |
 | `UVSQ_OUT_PATH` | _(aucun, sortie standard)_ | Repli pour `--out` |
 | `UVSQ_STATUS_PATH` | _(aucun)_ | Repli pour `--status` |
+| `UVSQ_STUDENTS_PATH` | _(aucun)_ | Repli pour `--students` (active le [mode multi-étudiants](#mode-multi-étudiants)) |
+| `UVSQ_OUT_DIR` | _(aucun)_ | Repli pour `--out-dir` (obligatoire avec `UVSQ_STUDENTS_PATH`) |
 
 ## Utilisation
 
@@ -77,6 +79,59 @@ En cas d'échec, `ok` passe à `false`, `error` contient le détail, et
 `lastSuccessAt` conserve la date de la dernière exécution réussie - ce qui
 permet à une surveillance externe (script, uptime check) de détecter que le
 calendrier n'est plus rafraîchi depuis trop longtemps.
+
+## Mode multi-étudiants
+
+Par défaut, le service publie un seul calendrier (une formation, un token,
+voir ci-dessus). Il peut aussi publier un calendrier **par personne**, chacune
+avec sa propre formation UVSQ et son propre token secret - utile pour ouvrir
+le service à d'autres étudiants ou personnes de l'UVSQ sans qu'ils partagent
+la même URL.
+
+Ce mode s'active avec deux options (CLI ou variables d'environnement) à la
+place de `--out`/`UVSQ_OUT_PATH` :
+
+- `--students`/`UVSQ_STUDENTS_PATH` : chemin vers un registre JSON (voir
+  [`deploy/students.json.example`](./deploy/students.json.example)), un
+  tableau d'objets `{ name, token, formation, calendarName?, prodId? }`.
+  `name` est un identifiant interne (logs, statut agrégé) et ne fait **pas**
+  partie de l'URL ; `token` (généré avec `openssl rand -hex 16`, comme pour le
+  mode mono-utilisateur) en fait partie. `calendarName`/`prodId` sont
+  optionnels et remplacent les valeurs globales pour cet étudiant seulement -
+  la période, le fuseau horaire et les paramètres réseau restent communs à
+  tous. Comme le fichier d'environnement en mode mono-utilisateur, **ce
+  registre ne doit jamais être committé dans ce dépôt** puisqu'il contient les
+  tokens : il vit hors git, ex. `/etc/uvsq-schedule-sync/students.json`.
+- `--out-dir`/`UVSQ_OUT_DIR` : répertoire de base où publier les calendriers.
+  Chaque étudiant obtient `${outDir}/<son-token>/edt.ics` (et son fichier de
+  statut `edt.ics.status.json` juste à côté) - exactement le même schéma d'URL
+  que le mode mono-utilisateur, juste un dossier par token au lieu d'un seul.
+
+```bash
+node src/index.js --students /etc/uvsq-schedule-sync/students.json --out-dir /var/www/edt.upsclay.thuguet.fr
+```
+
+L'échec de récupération d'un étudiant (réseau, formation invalide...) n'empêche
+pas le traitement des autres : chacun a son fichier de statut indépendant.
+Un statut agrégé est en plus écrit dans `${outDir}/status.json` :
+
+```json
+{
+  "ok": false,
+  "students": [
+    { "name": "alice", "ok": true, "eventCount": 42 },
+    { "name": "bob", "ok": false, "error": "Échec de récupération de l'emploi du temps après 3 tentatives : ..." }
+  ]
+}
+```
+
+Si au moins un étudiant échoue, le processus quitte tout de même avec un code
+de sortie non nul (pour que systemd/cron/monitoring détecte le souci), mais
+seulement **après** avoir traité et publié le calendrier de tous les autres.
+
+Pour ajouter ou retirer une personne, éditer le registre puis relancer une
+exécution (`sudo systemctl start uvsq-schedule-sync.service` avec systemd) :
+aucun redémarrage du timer n'est nécessaire.
 
 ## Tests
 
@@ -125,6 +180,11 @@ sudo cp deploy/uvsq-schedule-sync.service deploy/uvsq-schedule-sync.timer /etc/s
 sudo systemctl daemon-reload
 sudo systemctl enable --now uvsq-schedule-sync.timer
 ```
+
+Les étapes 3-4 ci-dessus déploient le [mode mono-utilisateur](#configuration).
+Pour publier un calendrier par étudiant à la place, remplacer l'étape 4 par un
+registre `UVSQ_STUDENTS_PATH`/`UVSQ_OUT_DIR` - voir
+[Mode multi-étudiants](#mode-multi-étudiants).
 
 Pour les mises à jour suivantes, en tant que propriétaire du dossier (pas
 besoin de sudo) :

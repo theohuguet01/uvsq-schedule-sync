@@ -1,0 +1,13 @@
+[
+  {
+    "name": "exemple-etudiant-1",
+    "token": "<token1>",
+    "formation": "MYIRS1_888"
+  },
+  {
+    "name": "exemple-etudiant-2",
+    "token": "<token2>",
+    "formation": "MYAUTRE_777",
+    "calendarName": "EDT Autre Formation UVSQ"
+  }
+]

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { buildRequestBody, loadConfig } from '../config.js'
+import { buildRequestBody, buildStudentConfig, loadConfig } from '../config.js'
 
 test('valeurs par défaut quand aucune variable d\'environnement n\'est définie', () => {
   const cfg = loadConfig({})
@@ -45,4 +45,31 @@ test('buildRequestBody encode correctement les paramètres, y compris federation
   assert.match(body, /start=2027-01-01/)
   assert.match(body, /end=2027-06-30/)
   assert.match(body, /federationIds%5B%5D=MYAUTRE_777/)
+})
+
+test('buildStudentConfig surcharge formation/calendarName/prodId, garde le reste de la config globale', () => {
+  const baseCfg = loadConfig({})
+
+  const cfg = buildStudentConfig(baseCfg, { formation: 'AUTRE_999', name: 'jane-doe', token: 'a'.repeat(32) })
+
+  assert.equal(cfg.formation, 'AUTRE_999')
+  assert.equal(cfg.calendarName, baseCfg.calendarName)
+  assert.equal(cfg.prodId, baseCfg.prodId)
+  assert.equal(cfg.start, baseCfg.start)
+  assert.equal(cfg.timezone, baseCfg.timezone)
+})
+
+test('buildStudentConfig applique les surcharges calendarName/prodId de l\'étudiant si présentes', () => {
+  const baseCfg = loadConfig({})
+
+  const cfg = buildStudentConfig(baseCfg, {
+    formation: 'AUTRE_999',
+    name: 'jane-doe',
+    token: 'a'.repeat(32),
+    calendarName: 'EDT de Jane',
+    prodId: '//jane//FR',
+  })
+
+  assert.equal(cfg.calendarName, 'EDT de Jane')
+  assert.equal(cfg.prodId, '//jane//FR')
 })

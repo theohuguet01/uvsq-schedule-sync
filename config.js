@@ -46,6 +46,19 @@ export function loadConfig(env = process.env) {
 
 export const config = loadConfig()
 
+// Fusionne la config globale avec les surcharges d'un étudiant du registre
+// (voir src/students.js) : seuls formation/calendarName/prodId sont
+// personnalisables par étudiant, le reste (période, fuseau, retries...) est
+// partagé par tout le monde.
+export function buildStudentConfig(baseCfg, student) {
+  return {
+    ...baseCfg,
+    formation: student.formation,
+    calendarName: student.calendarName ?? baseCfg.calendarName,
+    prodId: student.prodId ?? baseCfg.prodId,
+  }
+}
+
 export function buildRequestBody(cfg = config) {
   const params = new URLSearchParams()
   params.set('start', cfg.start)
