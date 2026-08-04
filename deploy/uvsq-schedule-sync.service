@@ -22,5 +22,5 @@ ExecStart=/usr/bin/node src/index.js
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/var/www/edt.upsclay.thuguet.fr
+ReadWritePaths=/var/www/edt.upsaclay.thuguet.fr
 PrivateTmp=true

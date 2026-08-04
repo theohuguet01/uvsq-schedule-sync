@@ -108,7 +108,7 @@ place de `--out`/`UVSQ_OUT_PATH` :
   que le mode mono-utilisateur, juste un dossier par token au lieu d'un seul.
 
 ```bash
-node src/index.js --students /etc/uvsq-schedule-sync/students.json --out-dir /var/www/edt.upsclay.thuguet.fr
+node src/index.js --students /etc/uvsq-schedule-sync/students.json --out-dir /var/www/edt.upsaclay.thuguet.fr
 ```
 
 L'échec de récupération d'un étudiant (réseau, formation invalide...) n'empêche
@@ -240,19 +240,19 @@ cd /opt/uvsq-schedule-sync && npm install --omit=dev
 # 2. Créer un utilisateur système dédié, sans shell interactif. Il n'a besoin
 #    QUE de lire /opt/uvsq-schedule-sync (permissions par défaut suffisent,
 #    inutile de lui en donner la propriété) - il écrit uniquement dans
-#    /var/www/edt.upsclay.thuguet.fr.
+#    /var/www/edt.upsaclay.thuguet.fr.
 sudo useradd --system --no-create-home --shell /usr/sbin/nologin uvsq-schedule-sync
 
 # 3. Générer un token secret et créer le répertoire de sortie (voir la
 #    section Caddy ci-dessous pour le rôle de ce token dans l'URL)
 TOKEN=$(openssl rand -hex 16)
-sudo mkdir -p "/var/www/edt.upsclay.thuguet.fr/$TOKEN"
-sudo chown -R uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr
+sudo mkdir -p "/var/www/edt.upsaclay.thuguet.fr/$TOKEN"
+sudo chown -R uvsq-schedule-sync:caddy /var/www/edt.upsaclay.thuguet.fr
 
 # 4. Créer le fichier d'environnement (hors dépôt git, contient le token)
 sudo mkdir -p /etc/uvsq-schedule-sync
-echo "UVSQ_OUT_PATH=/var/www/edt.upsclay.thuguet.fr/$TOKEN/edt.ics" | sudo tee /etc/uvsq-schedule-sync/env
-echo "URL du calendrier : https://edt.upsclay.thuguet.fr/$TOKEN/edt.ics"
+echo "UVSQ_OUT_PATH=/var/www/edt.upsaclay.thuguet.fr/$TOKEN/edt.ics" | sudo tee /etc/uvsq-schedule-sync/env
+echo "URL du calendrier : https://edt.upsaclay.thuguet.fr/$TOKEN/edt.ics"
 
 # 5. Installer les unités (adapter ExecStart/WorkingDirectory dans le
 #    .service si vos chemins diffèrent, ex. `which node`)
@@ -277,7 +277,7 @@ npm install --omit=dev   # si package.json/package-lock.json ont changé
 
 Puis recopier les fichiers `deploy/`/`public/` modifiés le cas échéant
 (`.service`/`.timer` → `/etc/systemd/system/` + `daemon-reload`, fichiers
-statiques → `/var/www/edt.upsclay.thuguet.fr/`).
+statiques → `/var/www/edt.upsaclay.thuguet.fr/`).
 
 Vérifier :
 
@@ -290,7 +290,7 @@ sudo systemctl start uvsq-schedule-sync.service  # forcer une exécution immédi
 ### Avec cron (alternative)
 
 ```cron
-*/5 * * * * cd /chemin/vers/uvsq-schedule-sync && /usr/bin/node src/index.js --out /var/www/edt.upsclay.thuguet.fr/<token>/edt.ics >> /var/log/uvsq-schedule-sync.log 2>&1
+*/5 * * * * cd /chemin/vers/uvsq-schedule-sync && /usr/bin/node src/index.js --out /var/www/edt.upsaclay.thuguet.fr/<token>/edt.ics >> /var/log/uvsq-schedule-sync.log 2>&1
 ```
 
 ### Servir le calendrier derrière Caddy
@@ -298,7 +298,7 @@ sudo systemctl start uvsq-schedule-sync.service  # forcer une exécution immédi
 Un exemple est fourni dans [`deploy/Caddyfile.example`](./deploy/Caddyfile.example) :
 un sous-domaine dédié, servi en statique (`file_server`), avec le bon
 `Content-Type` pour un fichier `.ics`. Comme le fichier est écrit sous
-`/var/www/edt.upsclay.thuguet.fr/<token>/edt.ics` (token généré à l'étape 3 du déploiement
+`/var/www/edt.upsaclay.thuguet.fr/<token>/edt.ics` (token généré à l'étape 3 du déploiement
 systemd), l'URL du calendrier n'est ni protégée par mot de passe ni devinable :
 
 - Caddy ne liste jamais le contenu d'un répertoire sans la directive `browse`
@@ -306,7 +306,7 @@ systemd), l'URL du calendrier n'est ni protégée par mot de passe ni devinable 
 - Sans authentification, aucun souci de compatibilité côté clients calendrier
   (Apple Calendar/Google Agenda gèrent mal le Basic Auth sur `webcal://`).
 
-La racine `/var/www/edt.upsclay.thuguet.fr/` sert elle une page d'accueil statique
+La racine `/var/www/edt.upsaclay.thuguet.fr/` sert elle une page d'accueil statique
 (voir section suivante) : elle ne dévoile rien sur le token, juste une page
 d'atterrissage neutre pour qui tombe sur le domaine sans le lien complet.
 
@@ -336,8 +336,8 @@ la racine du domaine (sans le token) ne tombe pas sur une 404. Contrairement à
 à copier une seule fois (ou à chaque mise à jour du dépôt) :
 
 ```bash
-sudo cp public/index.html public/404.html public/inscription.html public/confidentialite.html public/blason-uvsq-paris-saclay.png public/robots.txt /var/www/edt.upsclay.thuguet.fr/
-sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsclay.thuguet.fr/index.html /var/www/edt.upsclay.thuguet.fr/404.html /var/www/edt.upsclay.thuguet.fr/inscription.html /var/www/edt.upsclay.thuguet.fr/confidentialite.html /var/www/edt.upsclay.thuguet.fr/blason-uvsq-paris-saclay.png /var/www/edt.upsclay.thuguet.fr/robots.txt
+sudo cp public/index.html public/404.html public/inscription.html public/confidentialite.html public/blason-uvsq-paris-saclay.png public/robots.txt /var/www/edt.upsaclay.thuguet.fr/
+sudo chown uvsq-schedule-sync:caddy /var/www/edt.upsaclay.thuguet.fr/index.html /var/www/edt.upsaclay.thuguet.fr/404.html /var/www/edt.upsaclay.thuguet.fr/inscription.html /var/www/edt.upsaclay.thuguet.fr/confidentialite.html /var/www/edt.upsaclay.thuguet.fr/blason-uvsq-paris-saclay.png /var/www/edt.upsaclay.thuguet.fr/robots.txt
 ```
 
 [`public/404.html`](./public/404.html) est servi pour toute page introuvable

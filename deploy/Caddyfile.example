@@ -5,8 +5,8 @@
 # token joue le rôle de secret puisque Caddy ne liste pas les répertoires
 # (pas de directive "browse" ci-dessous).
 
-edt.upsclay.thuguet.fr {
-	root * /var/www/edt.upsclay.thuguet.fr
+edt.upsaclay.thuguet.fr {
+	root * /var/www/edt.upsaclay.thuguet.fr
 	file_server
 
 	# Le calendrier est déjà protégé par un chemin secret (token) : on évite
@@ -35,7 +35,7 @@ edt.upsclay.thuguet.fr {
 	}
 
 	log {
-		output file /var/log/caddy/edt.upsclay.thuguet.fr.access.log
+		output file /var/log/caddy/edt.upsaclay.thuguet.fr.access.log
 		format console
 	}
 }
