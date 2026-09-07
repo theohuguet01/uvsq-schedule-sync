@@ -3,6 +3,7 @@ import { parseEvent } from './parseEvent.js'
 import { generateIcs } from './generateIcs.js'
 import { writeAtomic } from './writeAtomic.js'
 import { writeFailureStatus, writeSuccessStatus } from './heartbeat.js'
+import { loadManualEvents } from './manualEvents.js'
 
 // Génère le calendrier d'une seule config (un étudiant, ou l'unique formation
 // en mode mono-utilisateur) : fetch, parsing, écriture, statut. Utilisée par
@@ -13,10 +14,17 @@ export async function syncOne(cfg, outPath, statusPath) {
     const rawEvents = await fetchSchedule(cfg)
     console.error(`[sync] ${rawEvents.length} événement(s) reçu(s) depuis l'API (${cfg.formation})`)
 
-    const events = rawEvents
+    const parsedEvents = rawEvents
       .map((rawEvent) => parseEvent(rawEvent, cfg.formation))
       .filter((event) => event !== null)
-    console.error(`[sync] ${events.length} événement(s) valide(s) après nettoyage (${cfg.formation})`)
+    console.error(`[sync] ${parsedEvents.length} événement(s) valide(s) après nettoyage (${cfg.formation})`)
+
+    const manualEvents = await loadManualEvents(cfg.formation)
+    if (manualEvents.length > 0) {
+      console.error(`[sync] ${manualEvents.length} événement(s) manuel(s) ajouté(s) (${cfg.formation})`)
+    }
+
+    const events = [...parsedEvents, ...manualEvents]
 
     const ics = generateIcs(events, cfg)
 

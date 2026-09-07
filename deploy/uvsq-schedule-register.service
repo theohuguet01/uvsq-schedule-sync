@@ -18,11 +18,15 @@ RestartSec=5
 
 # Contrairement au service de sync (oneshot, une execution puis arret), celui-ci
 # tourne en continu pour ecouter les requetes HTTP - mais garde le meme
-# durcissement : lecture seule sur tout sauf le repertoire servi par Caddy.
+# durcissement : lecture seule sur tout sauf le repertoire servi par Caddy et
+# le repertoire du registre. Ce dernier est indispensable ici (contrairement
+# au service de sync qui ne fait que le lire) : registerStudent/unregisterStudent
+# (src/registry.js) reecrivent students.json a chaque inscription/suppression -
+# sans cette entree, l'ecriture echoue (EROFS) et /api/register renvoie 500.
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/var/www/edt.upsaclay.thuguet.fr
+ReadWritePaths=/var/www/edt.upsaclay.thuguet.fr /etc/uvsq-schedule-sync
 PrivateTmp=true
 
 [Install]

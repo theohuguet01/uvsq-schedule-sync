@@ -53,11 +53,14 @@ const RAW_EVENT = {
 }
 
 test('inscription réussie : registre + calendrier écrits, URL retournée', async (t) => {
+  // Formation sans fichier de correctifs (voir src/manualEvents/) : le test
+  // vise le flux générique d'inscription, pas la fusion des événements
+  // manuels (couverte par test/sync.test.js), donc eventCount doit rester 1.
   mockFetch(t, async () => ({ ok: true, text: async () => JSON.stringify([RAW_EVENT]) }))
   const { registryPath, outDir } = await makeDirs(t)
 
   const result = await handleRegister(
-    { ip: '1.2.3.4', body: { name: 'Alice Dupont', formation: 'MYIRS1_888' } },
+    { ip: '1.2.3.4', body: { name: 'Alice Dupont', formation: 'MYAUTRE_777' } },
     { registryPath, outDir, baseCfg: testConfig(), publicBaseUrl: 'https://edt.example.fr', rateLimiter: alwaysAllow() },
   )
 
@@ -70,7 +73,7 @@ test('inscription réussie : registre + calendrier écrits, URL retournée', asy
 
   const registry = JSON.parse(await readFile(registryPath, 'utf8'))
   assert.equal(registry.length, 1)
-  assert.equal(registry[0].formation, 'MYIRS1_888')
+  assert.equal(registry[0].formation, 'MYAUTRE_777')
 
   const ics = await readFile(join(outDir, registry[0].token, 'edt.ics'), 'utf8')
   assert.match(ics, /BEGIN:VEVENT/)

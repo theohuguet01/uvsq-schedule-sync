@@ -60,6 +60,19 @@ En cas d'erreur (réseau, réponse API invalide), le script quitte avec un code
 de sortie non nul et log le détail sur `stderr`, sans toucher au fichier de
 sortie précédent.
 
+## Événements manuels (données manquantes de l'API UVSQ)
+
+`edt.uvsq.fr` n'expose pas certaines données réelles de l'emploi du temps -
+par exemple les journées passées au CFA-AFORP pour `MYIRS1_888`, absentes de
+l'API mais présentes sur le planning Excel officiel de la formation
+(`EDT-M1 IRS-VAA-2026-2027.xlsx`). Pour combler ce type de lacune, un fichier
+JSON versionné par code de formation dans `src/manualEvents/` (ex.
+`src/manualEvents/MYIRS1_888.json`) peut lister des événements au même format
+que ceux produits par [`parseEvent`](./src/parseEvent.js) (`id`, `start`,
+`end`, `summary`, `location`) : ils sont fusionnés avec ceux de l'API avant
+génération de l'ICS ([`src/sync.js`](./src/sync.js)). Une formation sans
+fichier associé n'est pas affectée (repli silencieux sur un tableau vide).
+
 ## Fichier de statut (surveillance)
 
 Quand `--out`/`UVSQ_OUT_PATH` est utilisé, un fichier `<out>.status.json` est
