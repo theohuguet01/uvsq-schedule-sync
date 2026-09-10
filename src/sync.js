@@ -5,19 +5,31 @@ import { writeAtomic } from './writeAtomic.js'
 import { writeFailureStatus, writeSuccessStatus } from './heartbeat.js'
 import { loadManualEvents } from './manualEvents.js'
 
+// Formations dont le planning ADE est trop incomplet/incohérent pour être
+// exploité : l'Excel officiel (retranscrit dans src/manualEvents/<formation>.json)
+// devient l'unique source de vérité et l'appel à l'API UVSQ est sauté pour
+// éviter les doublons entre les deux sources.
+const EXCEL_ONLY_FORMATIONS = new Set(['MYIRS1_888'])
+
 // Génère le calendrier d'une seule config (un étudiant, ou l'unique formation
 // en mode mono-utilisateur) : fetch, parsing, écriture, statut. Utilisée par
 // le CLI (mode legacy et boucle multi-étudiants) et par le serveur d'inscription
 // (sync immédiate d'un seul étudiant qui vient de s'inscrire).
 export async function syncOne(cfg, outPath, statusPath) {
   try {
-    const rawEvents = await fetchSchedule(cfg)
-    console.error(`[sync] ${rawEvents.length} événement(s) reçu(s) depuis l'API (${cfg.formation})`)
+    let parsedEvents = []
 
-    const parsedEvents = rawEvents
-      .map((rawEvent) => parseEvent(rawEvent, cfg.formation))
-      .filter((event) => event !== null)
-    console.error(`[sync] ${parsedEvents.length} événement(s) valide(s) après nettoyage (${cfg.formation})`)
+    if (EXCEL_ONLY_FORMATIONS.has(cfg.formation)) {
+      console.error(`[sync] API UVSQ ignorée pour ${cfg.formation} (planning piloté uniquement par l'Excel officiel)`)
+    } else {
+      const rawEvents = await fetchSchedule(cfg)
+      console.error(`[sync] ${rawEvents.length} événement(s) reçu(s) depuis l'API (${cfg.formation})`)
+
+      parsedEvents = rawEvents
+        .map((rawEvent) => parseEvent(rawEvent, cfg.formation))
+        .filter((event) => event !== null)
+      console.error(`[sync] ${parsedEvents.length} événement(s) valide(s) après nettoyage (${cfg.formation})`)
+    }
 
     const manualEvents = await loadManualEvents(cfg.formation)
     if (manualEvents.length > 0) {

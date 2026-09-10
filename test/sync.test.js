@@ -44,18 +44,20 @@ const RAW_EVENT = {
   description: '\r\n\r\n<br />\r\n\r\nAmphi\r\n\r\n<br />\r\n\r\nCours test\r\n\r\n<br />\r\n\r\n',
 }
 
-test('MYIRS1_888 : les événements manuels AFORP sont fusionnés avec ceux de l\'API', async (t) => {
-  mockFetch(t, async () => ({ ok: true, text: async () => JSON.stringify([RAW_EVENT]) }))
+test('MYIRS1_888 : planning piloté uniquement par l\'Excel, l\'API UVSQ n\'est pas appelée', async (t) => {
+  mockFetch(t, async () => {
+    throw new Error('fetch ne doit pas être appelé pour MYIRS1_888 (formation Excel-only)')
+  })
   const outPath = await makeOutPath(t)
 
   const { eventCount } = await syncOne(testConfig(), outPath, null)
 
-  // 1 événement de l'API + 80 événements manuels (voir src/manualEvents/MYIRS1_888.json)
-  assert.equal(eventCount, 81)
+  // 148 événements manuels (voir src/manualEvents/MYIRS1_888.json), aucun événement API
+  assert.equal(eventCount, 148)
 
   const ics = await readFile(outPath, 'utf8')
   assert.match(ics, /SUMMARY:AFORP/)
-  assert.match(ics, /SUMMARY:Cours test/)
+  assert.doesNotMatch(ics, /SUMMARY:Cours test/)
 })
 
 test('formation sans correctifs : seuls les événements de l\'API sont présents', async (t) => {

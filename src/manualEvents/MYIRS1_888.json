@@ -1,5 +1,243 @@
 [
   {
+    "id": "manual-cours-2026-09-07-am",
+    "start": "2026-09-07T09:30:00",
+    "end": "2026-09-07T12:30:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-07-pm",
+    "start": "2026-09-07T13:15:00",
+    "end": "2026-09-07T17:15:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-08-am",
+    "start": "2026-09-08T09:30:00",
+    "end": "2026-09-08T12:30:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-08-pm",
+    "start": "2026-09-08T13:15:00",
+    "end": "2026-09-08T17:15:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-09-am",
+    "start": "2026-09-09T09:30:00",
+    "end": "2026-09-09T13:00:00",
+    "summary": "Introduction à la sécurité. P. SAS",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-09-pm",
+    "start": "2026-09-09T13:45:00",
+    "end": "2026-09-09T16:45:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-10-am",
+    "start": "2026-09-10T09:30:00",
+    "end": "2026-09-10T12:30:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-10-pm",
+    "start": "2026-09-10T13:15:00",
+    "end": "2026-09-10T16:45:00",
+    "summary": "Introduction à la sécurité. P. SAS",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-11-am",
+    "start": "2026-09-11T09:30:00",
+    "end": "2026-09-11T12:30:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-11-pm",
+    "start": "2026-09-11T13:15:00",
+    "end": "2026-09-11T17:15:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-14-am",
+    "start": "2026-09-14T09:30:00",
+    "end": "2026-09-14T13:00:00",
+    "summary": "Introduction à la sécurité. P. SAS",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-14-pm",
+    "start": "2026-09-14T13:45:00",
+    "end": "2026-09-14T17:15:00",
+    "summary": "Introduction à la sécurité. P. SAS",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-15-am",
+    "start": "2026-09-15T09:30:00",
+    "end": "2026-09-15T12:30:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-15-pm",
+    "start": "2026-09-15T13:15:00",
+    "end": "2026-09-15T16:15:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-16-am",
+    "start": "2026-09-16T09:30:00",
+    "end": "2026-09-16T12:30:00",
+    "summary": "Maths & Langages S. GOUGEAUD",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-16-pm",
+    "start": "2026-09-16T13:15:00",
+    "end": "2026-09-16T16:15:00",
+    "summary": "Maths & Langages S. GOUGEAUD + Vacataire",
+    "location": "Serpolet/Romarin"
+  },
+  {
+    "id": "manual-cours-2026-09-17-am",
+    "start": "2026-09-17T09:30:00",
+    "end": "2026-09-17T12:30:00",
+    "summary": "Maths & Langages S. GOUGEAUD",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-17-pm",
+    "start": "2026-09-17T13:15:00",
+    "end": "2026-09-17T16:15:00",
+    "summary": "Maths & Langages S. GOUGEAUD + Vacataire",
+    "location": "Serpolet/Romarin"
+  },
+  {
+    "id": "manual-cours-2026-09-18-am",
+    "start": "2026-09-18T09:30:00",
+    "end": "2026-09-18T12:30:00",
+    "summary": "Maths & Langages S. GOUGEAUD + Vacataire",
+    "location": "Serpolet/Romarin"
+  },
+  {
+    "id": "manual-cours-2026-09-18-pm",
+    "start": "2026-09-18T13:15:00",
+    "end": "2026-09-18T16:15:00",
+    "summary": "Maths & Langages S. GOUGEAUD + Vacataire",
+    "location": "Serpolet/Romarin"
+  },
+  {
+    "id": "manual-cours-2026-09-21-am",
+    "start": "2026-09-21T09:30:00",
+    "end": "2026-09-21T13:00:00",
+    "summary": "Introduction à la sécurité. P. SAS",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-21-pm",
+    "start": "2026-09-21T13:45:00",
+    "end": "2026-09-21T17:15:00",
+    "summary": "Introduction à la sécurité. P. SAS",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-22-am",
+    "start": "2026-09-22T09:30:00",
+    "end": "2026-09-22T13:00:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-22-pm",
+    "start": "2026-09-22T13:45:00",
+    "end": "2026-09-22T17:15:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-23-am",
+    "start": "2026-09-23T09:30:00",
+    "end": "2026-09-23T13:00:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-23-pm",
+    "start": "2026-09-23T13:45:00",
+    "end": "2026-09-23T17:15:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-24-am",
+    "start": "2026-09-24T09:30:00",
+    "end": "2026-09-24T13:00:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-24-pm",
+    "start": "2026-09-24T13:45:00",
+    "end": "2026-09-24T17:15:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-25-am",
+    "start": "2026-09-25T09:30:00",
+    "end": "2026-09-25T12:30:00",
+    "summary": "Maths & Langages S. GOUGEAUD",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-25-pm",
+    "start": "2026-09-25T13:15:00",
+    "end": "2026-09-25T16:15:00",
+    "summary": "Maths & Langages S. GOUGEAUD + Vacataire",
+    "location": "Serpolet/Romarin"
+  },
+  {
+    "id": "manual-cours-2026-09-28-am",
+    "start": "2026-09-28T09:30:00",
+    "end": "2026-09-28T13:00:00",
+    "summary": "Introduction à la sécurité. P. SAS",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-28-pm",
+    "start": "2026-09-28T13:45:00",
+    "end": "2026-09-28T17:15:00",
+    "summary": "Introduction à la sécurité. P. SAS",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-09-29-am",
+    "start": "2026-09-29T09:30:00",
+    "end": "2026-09-29T13:00:00",
+    "summary": "Introduction à la sécurité. P. SAS",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-09-29-pm",
+    "start": "2026-09-29T13:45:00",
+    "end": "2026-09-29T16:45:00",
+    "summary": "Maths & Langages S. GOUGEAUD + Vacataire",
+    "location": "Serpolet/Romarin"
+  },
+  {
     "id": "manual-aforp-2026-09-30-am",
     "start": "2026-09-30T09:30:00",
     "end": "2026-09-30T12:30:00",
@@ -42,6 +280,34 @@
     "location": "CFA-AFORP (Cachan), 26-28 Rue Léon Bloy, 92340 Cachan, France"
   },
   {
+    "id": "manual-cours-2026-10-12-am",
+    "start": "2026-10-12T09:30:00",
+    "end": "2026-10-12T12:30:00",
+    "summary": "Maths & Langages S. GOUGEAUD + Vacataire",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2026-10-12-pm",
+    "start": "2026-10-12T13:15:00",
+    "end": "2026-10-12T16:15:00",
+    "summary": "Maths & Langages S. GOUGEAUD + Vacataire",
+    "location": "Serpolet/Romarin"
+  },
+  {
+    "id": "manual-cours-2026-10-13-am",
+    "start": "2026-10-13T09:30:00",
+    "end": "2026-10-13T12:30:00",
+    "summary": "Maths & Langages S. GOUGEAUD + Vacataire",
+    "location": "Serpolet/Romarin"
+  },
+  {
+    "id": "manual-cours-2026-10-13-pm",
+    "start": "2026-10-13T13:15:00",
+    "end": "2026-10-13T16:15:00",
+    "summary": "Fondamentaux des Réseaux - CM M. GUEROUI",
+    "location": "Amphi"
+  },
+  {
     "id": "manual-aforp-2026-10-14-am",
     "start": "2026-10-14T09:30:00",
     "end": "2026-10-14T12:30:00",
@@ -82,6 +348,20 @@
     "end": "2026-10-16T17:15:00",
     "summary": "AFORP",
     "location": "CFA-AFORP (Cachan), 26-28 Rue Léon Bloy, 92340 Cachan, France"
+  },
+  {
+    "id": "manual-cours-2026-10-19-am",
+    "start": "2026-10-19T09:30:00",
+    "end": "2026-10-19T13:00:00",
+    "summary": "Introduction à la sécurité. P. SAS",
+    "location": "CN1/CN2"
+  },
+  {
+    "id": "manual-cours-2026-10-19-pm",
+    "start": "2026-10-19T13:45:00",
+    "end": "2026-10-19T17:15:00",
+    "summary": "Introduction à la sécurité. P. SAS",
+    "location": "CN1/CN2"
   },
   {
     "id": "manual-aforp-2026-10-20-am",
@@ -208,6 +488,146 @@
     "end": "2026-12-04T17:15:00",
     "summary": "AFORP",
     "location": "CFA-AFORP (Cachan), 26-28 Rue Léon Bloy, 92340 Cachan, France"
+  },
+  {
+    "id": "manual-cours-2027-01-04-am",
+    "start": "2027-01-04T09:30:00",
+    "end": "2027-01-04T13:00:00",
+    "summary": "Modélisation D. SOHIER",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-01-04-pm",
+    "start": "2027-01-04T13:45:00",
+    "end": "2027-01-04T16:45:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI (1/5)",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-01-05-am",
+    "start": "2027-01-05T09:30:00",
+    "end": "2027-01-05T13:00:00",
+    "summary": "Modélisation D. SOHIER",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-01-05-pm",
+    "start": "2027-01-05T13:45:00",
+    "end": "2027-01-05T16:45:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI (2/5)",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-01-06-am",
+    "start": "2027-01-06T09:30:00",
+    "end": "2027-01-06T13:00:00",
+    "summary": "Modélisation D. SOHIER",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-01-06-pm",
+    "start": "2027-01-06T13:45:00",
+    "end": "2027-01-06T16:45:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI (3/5)",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-01-07-am",
+    "start": "2027-01-07T09:30:00",
+    "end": "2027-01-07T13:00:00",
+    "summary": "Modélisation D. SOHIER",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-01-07-pm",
+    "start": "2027-01-07T13:45:00",
+    "end": "2027-01-07T16:45:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI (4/5)",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-01-08-am",
+    "start": "2027-01-08T09:30:00",
+    "end": "2027-01-08T13:00:00",
+    "summary": "Modélisation D. SOHIER",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-01-08-pm",
+    "start": "2027-01-08T13:45:00",
+    "end": "2027-01-08T16:45:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI (5/5)",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-02-08-am",
+    "start": "2027-02-08T09:30:00",
+    "end": "2027-02-08T13:00:00",
+    "summary": "Modélisation D. SOHIER",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-02-08-pm",
+    "start": "2027-02-08T13:45:00",
+    "end": "2027-02-08T16:45:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI (1/5)",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-02-09-am",
+    "start": "2027-02-09T09:30:00",
+    "end": "2027-02-09T13:00:00",
+    "summary": "Modélisation D. SOHIER",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-02-09-pm",
+    "start": "2027-02-09T13:45:00",
+    "end": "2027-02-09T16:45:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI (2/5)",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-02-10-am",
+    "start": "2027-02-10T09:30:00",
+    "end": "2027-02-10T13:00:00",
+    "summary": "Modélisation D. SOHIER",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-02-10-pm",
+    "start": "2027-02-10T13:45:00",
+    "end": "2027-02-10T16:45:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI (3/5)",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-02-11-am",
+    "start": "2027-02-11T09:30:00",
+    "end": "2027-02-11T13:00:00",
+    "summary": "Modélisation D. SOHIER",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-02-11-pm",
+    "start": "2027-02-11T13:45:00",
+    "end": "2027-02-11T16:45:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI (4/5)",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-02-12-am",
+    "start": "2027-02-12T09:30:00",
+    "end": "2027-02-12T13:00:00",
+    "summary": "Modélisation D. SOHIER",
+    "location": "Amphi"
+  },
+  {
+    "id": "manual-cours-2027-02-12-pm",
+    "start": "2027-02-12T13:45:00",
+    "end": "2027-02-12T16:45:00",
+    "summary": "Principes des transmissions radio N. AIT-SAADI (5/5)",
+    "location": "Amphi"
   },
   {
     "id": "manual-aforp-2027-03-08-am",
@@ -558,5 +978,61 @@
     "end": "2027-07-16T17:15:00",
     "summary": "AFORP",
     "location": "CFA-AFORP (Cachan), 26-28 Rue Léon Bloy, 92340 Cachan, France"
+  },
+  {
+    "id": "manual-soutenance-2027-08-24-am",
+    "start": "2027-08-24T09:30:00",
+    "end": "2027-08-24T12:30:00",
+    "summary": "Soutenances M1",
+    "location": ""
+  },
+  {
+    "id": "manual-soutenance-2027-08-24-pm",
+    "start": "2027-08-24T13:15:00",
+    "end": "2027-08-24T17:15:00",
+    "summary": "Soutenances M1",
+    "location": ""
+  },
+  {
+    "id": "manual-soutenance-2027-08-25-am",
+    "start": "2027-08-25T09:30:00",
+    "end": "2027-08-25T12:30:00",
+    "summary": "Soutenances M1",
+    "location": ""
+  },
+  {
+    "id": "manual-soutenance-2027-08-25-pm",
+    "start": "2027-08-25T13:15:00",
+    "end": "2027-08-25T17:15:00",
+    "summary": "Soutenances M1",
+    "location": ""
+  },
+  {
+    "id": "manual-soutenance-2027-08-26-am",
+    "start": "2027-08-26T09:30:00",
+    "end": "2027-08-26T12:30:00",
+    "summary": "Soutenances M1",
+    "location": ""
+  },
+  {
+    "id": "manual-soutenance-2027-08-26-pm",
+    "start": "2027-08-26T13:15:00",
+    "end": "2027-08-26T17:15:00",
+    "summary": "Soutenances M1",
+    "location": ""
+  },
+  {
+    "id": "manual-soutenance-2027-08-27-am",
+    "start": "2027-08-27T09:30:00",
+    "end": "2027-08-27T12:30:00",
+    "summary": "Soutenances M1",
+    "location": ""
+  },
+  {
+    "id": "manual-soutenance-2027-08-27-pm",
+    "start": "2027-08-27T13:15:00",
+    "end": "2027-08-27T17:15:00",
+    "summary": "Soutenances M1",
+    "location": ""
   }
 ]

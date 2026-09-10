@@ -153,13 +153,15 @@ test('nom déjà pris : 409, registre inchangé', async (t) => {
 })
 
 test('la sync immédiate échoue : inscription tout de même valide, synced=false', async (t) => {
+  // MYIRS1_888 est piloté uniquement par l'Excel (voir src/sync.js) et n'appelle
+  // jamais l'API : ce test simule une panne réseau, donc une autre formation.
   mockFetch(t, async () => {
     throw new Error('panne réseau simulée')
   })
   const { registryPath, outDir } = await makeDirs(t)
 
   const result = await handleRegister(
-    { ip: '1.2.3.4', body: { name: 'alice', formation: 'MYIRS1_888' } },
+    { ip: '1.2.3.4', body: { name: 'alice', formation: 'MYAUTRE_777' } },
     { registryPath, outDir, baseCfg: testConfig(), publicBaseUrl: 'https://edt.example.fr', rateLimiter: alwaysAllow() },
   )
 
