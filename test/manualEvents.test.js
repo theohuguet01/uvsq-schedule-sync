@@ -19,7 +19,7 @@ test('formation avec un fichier de correctifs : renvoie les événements manuels
   const aforpEvents = events.filter((event) => event.summary === 'AFORP')
   assert.equal(aforpEvents.length, 80)
   for (const event of aforpEvents) {
-    assert.equal(event.location, 'CFA-AFORP (Cachan), 26-28 Rue Léon Bloy, 92340 Cachan, France')
+    assert.equal(event.location, 'AFORP - CACHAN\n26-28 Rue Léon Bloy\n92340 Cachan\nFrance')
   }
 
   const coursEvents = events.filter((event) => event.summary !== 'AFORP' && event.summary !== 'Soutenances M1')

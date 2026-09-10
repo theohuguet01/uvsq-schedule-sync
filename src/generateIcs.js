@@ -18,6 +18,10 @@ export function generateIcs(events, cfg) {
   }).format(new Date())
 
   for (const event of events) {
+    const description = event.description
+      ? `${event.description}\n\nMis à jour le ${updatedAt}`
+      : `Mis à jour le ${updatedAt}`
+
     calendar.createEvent({
       id: event.id,
       start: event.start,
@@ -25,7 +29,7 @@ export function generateIcs(events, cfg) {
       timezone: cfg.timezone,
       summary: event.summary,
       location: event.location,
-      description: `Mis à jour le ${updatedAt}`,
+      description,
     })
   }
 

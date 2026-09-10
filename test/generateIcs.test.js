@@ -43,6 +43,41 @@ test('un événement produit un seul VEVENT avec les bons champs', () => {
   assert.match(ics, /LOCATION:AMPHI GENTIANE/)
 })
 
+test('description optionnelle (ex. nom du prof) précède la ligne "Mis à jour le"', () => {
+  const ics = generateIcs(
+    [
+      {
+        id: 'abc-123',
+        start: '2026-09-07T09:30:00',
+        end: '2026-09-07T10:30:00',
+        summary: 'Fondamentaux des Réseaux',
+        location: 'AMPHI GENTIANE',
+        description: 'M. GUEROUI',
+      },
+    ],
+    testCfg(),
+  )
+
+  assert.match(ics, /DESCRIPTION:M\. GUEROUI\\n\\nMis à jour le/)
+})
+
+test('sans description : seule la ligne "Mis à jour le" est présente', () => {
+  const ics = generateIcs(
+    [
+      {
+        id: 'abc-123',
+        start: '2026-09-07T09:30:00',
+        end: '2026-09-07T10:30:00',
+        summary: 'AFORP',
+        location: 'CFA-AFORP (Cachan)',
+      },
+    ],
+    testCfg(),
+  )
+
+  assert.match(ics, /DESCRIPTION:Mis à jour le/)
+})
+
 test('plusieurs événements produisent autant de VEVENT', () => {
   const events = [
     { id: '1', start: '2026-09-07T09:30:00', end: '2026-09-07T10:30:00', summary: 'A', location: 'X' },
