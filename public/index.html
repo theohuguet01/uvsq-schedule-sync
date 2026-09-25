@@ -292,6 +292,15 @@
   footer a {
     color: #fff;
   }
+  /* Mention de non-affiliation, visible dès l'arrivée sur la page (le
+     pied de page seul peut passer inaperçu). */
+  .notice {
+    font-size: 0.8rem;
+    color: var(--muted);
+    border-left: 3px solid var(--uvsq-prune);
+    padding: 4px 0 4px 10px;
+    margin: 0 0 12px;
+  }
 </style>
 </head>
 <body>
@@ -307,6 +316,7 @@
           <p class="subtitle">Générez votre lien de calendrier personnel, à ajouter dans Apple Calendrier, Google Agenda ou Outlook.</p>
         </div>
         <div class="card-body">
+          <p class="notice">Service non officiel, développé par un étudiant. Les emplois du temps proviennent des données publiques d'<code>edt.uvsq.fr</code>.</p>
           <form id="register-form" novalidate>
             <fieldset>
               <legend>Tous les champs sont obligatoires.</legend>
@@ -376,6 +386,7 @@
   </main>
   <footer>
     © 2026 Théo HUGUET - <a href="https://github.com/theohuguet01/uvsq-schedule-sync">github.com/theohuguet01/uvsq-schedule-sync</a> - <a href="confidentialite.html">Confidentialité</a>
+    <br>Projet étudiant indépendant, non affilié à l'UVSQ ni à l'Université Paris-Saclay.
   </footer>
 
   <script>
