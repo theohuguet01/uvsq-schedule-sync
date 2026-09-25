@@ -63,15 +63,26 @@ sortie précédent.
 ## Événements manuels (données manquantes de l'API UVSQ)
 
 `edt.uvsq.fr` n'expose pas certaines données réelles de l'emploi du temps -
-par exemple les journées passées au CFA-AFORP pour `MYIRS1_888`, absentes de
-l'API mais présentes sur le planning Excel officiel de la formation
-(`EDT-M1 IRS-VAA-2026-2027.xlsx`). Pour combler ce type de lacune, un fichier
-JSON versionné par code de formation dans `src/manualEvents/` (ex.
-`src/manualEvents/MYIRS1_888.json`) peut lister des événements au même format
-que ceux produits par [`parseEvent`](./src/parseEvent.js) (`id`, `start`,
-`end`, `summary`, `location`) : ils sont fusionnés avec ceux de l'API avant
-génération de l'ICS ([`src/sync.js`](./src/sync.js)). Une formation sans
-fichier associé n'est pas affectée (repli silencieux sur un tableau vide).
+par exemple les journées passées au CFA-AFORP ou les noms des profs pour
+`MYIRS1_888`, présents sur le planning Excel officiel de la formation
+(`EDT-M1 IRS-VAA-2026-2027.xlsx`). Un fichier JSON versionné par code de
+formation dans `src/manualEvents/` (ex. `src/manualEvents/MYIRS1_888.json`)
+liste des événements au même format que ceux produits par
+[`parseEvent`](./src/parseEvent.js) (`id`, `start`, `end`, `summary`,
+`location`, `description` optionnelle). Une formation sans fichier associé
+n'est pas affectée (repli silencieux sur un tableau vide).
+
+Par défaut, ces événements sont simplement ajoutés à ceux de l'API. Pour
+`MYIRS1_888` ([`src/sync.js`](./src/sync.js), [`src/mergeSchedule.js`](./src/mergeSchedule.js)) :
+
+- **horaires et salles** viennent toujours de `edt.uvsq.fr` ;
+- **nom du prof** : repris du cours de l'Excel (`id` en `manual-cours-...`) qui
+  chevauche le créneau de l'API, ou à défaut d'un cours de même nom (tolérant
+  aux accents, suffixes `(1/5)`/`- CM` et coquilles) s'il n'a qu'un seul prof ;
+- **intitulé** : celui de l'API, sauf s'il est générique (`Cours`) ;
+- les cours de l'Excel ne sont jamais publiés tels quels (un cours absent de
+  l'API est considéré comme déplacé ou annulé) ; les autres événements
+  manuels (AFORP, soutenances) sont ajoutés tels quels.
 
 ## Fichier de statut (surveillance)
 

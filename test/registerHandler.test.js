@@ -153,8 +153,6 @@ test('nom déjà pris : 409, registre inchangé', async (t) => {
 })
 
 test('la sync immédiate échoue : inscription tout de même valide, synced=false', async (t) => {
-  // MYIRS1_888 est piloté uniquement par l'Excel (voir src/sync.js) et n'appelle
-  // jamais l'API : ce test simule une panne réseau, donc une autre formation.
   mockFetch(t, async () => {
     throw new Error('panne réseau simulée')
   })
