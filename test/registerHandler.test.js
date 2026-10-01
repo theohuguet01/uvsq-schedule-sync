@@ -185,3 +185,43 @@ test('code de formation inconnu de l\'API (0 événement) : synced=true, eventCo
   assert.equal(result.body.synced, true)
   assert.equal(result.body.eventCount, 0)
 })
+
+test('groupe AFORP G1/G2 enregistré pour MYIRS1_888', async (t) => {
+  mockFetch(t, async () => ({ ok: true, text: async () => JSON.stringify([RAW_EVENT]) }))
+  const { registryPath, outDir } = await makeDirs(t)
+
+  const result = await handleRegister(
+    { ip: '1.2.3.4', body: { name: 'alice', formation: 'MYIRS1_888', aforpGroup: 'G2' } },
+    { registryPath, outDir, baseCfg: testConfig(), publicBaseUrl: 'https://edt.example.fr', rateLimiter: alwaysAllow() },
+  )
+
+  assert.equal(result.status, 201)
+  const registry = JSON.parse(await readFile(registryPath, 'utf8'))
+  assert.equal(registry[0].aforpGroup, 'G2')
+})
+
+test('groupe AFORP hors liste : 400, registre non créé', async (t) => {
+  const { registryPath, outDir } = await makeDirs(t)
+
+  const result = await handleRegister(
+    { ip: '1.2.3.4', body: { name: 'alice', formation: 'MYIRS1_888', aforpGroup: 'G3' } },
+    { registryPath, outDir, baseCfg: testConfig(), publicBaseUrl: 'https://edt.example.fr', rateLimiter: alwaysAllow() },
+  )
+
+  assert.equal(result.status, 400)
+  await assert.rejects(readFile(registryPath, 'utf8'), { code: 'ENOENT' })
+})
+
+test('groupe AFORP ignoré pour une formation hors AFORP', async (t) => {
+  mockFetch(t, async () => ({ ok: true, text: async () => JSON.stringify([RAW_EVENT]) }))
+  const { registryPath, outDir } = await makeDirs(t)
+
+  const result = await handleRegister(
+    { ip: '1.2.3.4', body: { name: 'alice', formation: 'MYAUTRE_777', aforpGroup: 'G2' } },
+    { registryPath, outDir, baseCfg: testConfig(), publicBaseUrl: 'https://edt.example.fr', rateLimiter: alwaysAllow() },
+  )
+
+  assert.equal(result.status, 201)
+  const registry = JSON.parse(await readFile(registryPath, 'utf8'))
+  assert.equal(registry[0].aforpGroup, undefined)
+})

@@ -105,3 +105,20 @@ test('rejette des noms dupliqués', async (t) => {
 
   await assert.rejects(() => loadStudents(path), /"name" dupliqué/)
 })
+
+test('accepte un groupe AFORP G1 ou G2', async (t) => {
+  const path = await withRegistry(t, JSON.stringify([
+    { ...VALID_STUDENT, aforpGroup: 'G2' },
+    { ...VALID_STUDENT, name: 'autre', token: 'b'.repeat(32), aforpGroup: 'G1' },
+  ]))
+
+  const students = await loadStudents(path)
+
+  assert.deepEqual(students.map((student) => student.aforpGroup), ['G2', 'G1'])
+})
+
+test('rejette un groupe AFORP hors liste', async (t) => {
+  const path = await withRegistry(t, JSON.stringify([{ ...VALID_STUDENT, aforpGroup: 'G3' }]))
+
+  await assert.rejects(loadStudents(path), /aforpGroup/)
+})

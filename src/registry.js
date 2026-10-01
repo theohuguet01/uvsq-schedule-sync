@@ -39,7 +39,7 @@ function generateToken() {
 // pas déjà pris, génère un token, valide l'entrée finale, puis réécrit le
 // fichier en entier (comme students.js, le registre vit hors dépôt git).
 // Utilisée par le serveur d'inscription (src/registerHandler.js).
-export async function registerStudent(path, { name, formation, calendarName, prodId }) {
+export async function registerStudent(path, { name, formation, calendarName, prodId, aforpGroup }) {
   return withWriteLock(async () => {
     const students = await readRegistry(path)
 
@@ -53,6 +53,7 @@ export async function registerStudent(path, { name, formation, calendarName, pro
       formation,
       ...(calendarName ? { calendarName } : {}),
       ...(prodId ? { prodId } : {}),
+      ...(aforpGroup ? { aforpGroup } : {}),
     }
     validateStudent(student, students.length)
 

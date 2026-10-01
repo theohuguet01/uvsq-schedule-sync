@@ -36,6 +36,15 @@ export function loadConfig(env = process.env) {
     timezone: envOr(env, 'UVSQ_TIMEZONE', DEFAULTS.timezone),
     prodId: envOr(env, 'UVSQ_PROD_ID', DEFAULTS.prodId),
     calendarName: envOr(env, 'UVSQ_CALENDAR_NAME', DEFAULTS.calendarName),
+    // Flux iCal Net-YPareo par groupe AFORP (voir src/fetchAforpIcs.js) :
+    // secrets, à renseigner dans /etc/uvsq-schedule-sync/env uniquement.
+    aforpIcsUrls: {
+      G1: envOr(env, 'UVSQ_AFORP_ICS_URL_G1', null),
+      G2: envOr(env, 'UVSQ_AFORP_ICS_URL_G2', null),
+    },
+    // Groupe AFORP en mode mono-utilisateur ; en mode multi-étudiants, c'est
+    // le champ "aforpGroup" de chaque étudiant qui compte.
+    aforpGroup: envOr(env, 'UVSQ_AFORP_GROUP', null),
     fetch: {
       timeoutMs: Number(envOr(env, 'UVSQ_FETCH_TIMEOUT_MS', DEFAULTS.fetchTimeoutMs)),
       retries: Number(envOr(env, 'UVSQ_FETCH_RETRIES', DEFAULTS.fetchRetries)),
@@ -47,7 +56,7 @@ export function loadConfig(env = process.env) {
 export const config = loadConfig()
 
 // Fusionne la config globale avec les surcharges d'un étudiant du registre
-// (voir src/students.js) : seuls formation/calendarName/prodId sont
+// (voir src/students.js) : seuls formation/calendarName/prodId/aforpGroup sont
 // personnalisables par étudiant, le reste (période, fuseau, retries...) est
 // partagé par tout le monde.
 export function buildStudentConfig(baseCfg, student) {
@@ -56,6 +65,7 @@ export function buildStudentConfig(baseCfg, student) {
     formation: student.formation,
     calendarName: student.calendarName ?? baseCfg.calendarName,
     prodId: student.prodId ?? baseCfg.prodId,
+    aforpGroup: student.aforpGroup ?? null,
   }
 }
 

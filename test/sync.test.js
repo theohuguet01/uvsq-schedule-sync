@@ -84,3 +84,67 @@ test('formation sans correctifs : seuls les événements de l\'API sont présent
 
   assert.equal(eventCount, 1)
 })
+
+const AFORP_FEED = [
+  'BEGIN:VCALENDAR',
+  'BEGIN:VEVENT',
+  'UID:1@NetYpareo',
+  'DTSTART;TZID=Europe/Paris:20260930T083000',
+  'DTEND;TZID=Europe/Paris:20260930T120000',
+  'LOCATION:42BE010',
+  'SUMMARY:Droit informatique et Certifications - M. DUPONT',
+  'END:VEVENT',
+  'END:VCALENDAR',
+].join('\r\n')
+
+const AFORP_URL = 'https://example.invalid/Net-YPareo/index.php/planning/ical/SECRET-GUID/'
+
+function aforpConfig() {
+  return testConfig({ aforpGroup: 'G2', aforpIcsUrls: { G1: null, G2: AFORP_URL } })
+}
+
+test('MYIRS1_888 + groupe AFORP : les jours du flux remplacent les créneaux AFORP manuels', async (t) => {
+  mockFetch(t, async (url) => (url === AFORP_URL
+    ? { ok: true, text: async () => AFORP_FEED }
+    : { ok: true, text: async () => JSON.stringify([RAW_EVENT]) }))
+  const outPath = await makeOutPath(t)
+
+  const { eventCount } = await syncOne(aforpConfig(), outPath, null)
+
+  // 89 (voir premier test) - 2 créneaux manuels du 30/09 + 1 cours du flux.
+  assert.equal(eventCount, 88)
+  const ics = await readFile(outPath, 'utf8')
+  assert.match(ics, /SUMMARY:AFORP - Droit informatique et Certifications/)
+  assert.match(ics, /DESCRIPTION:M\. DUPONT\\nSalle : 42BE010/)
+  assert.doesNotMatch(ics, /manual-aforp-2026-09-30/)
+  assert.match(ics, /manual-aforp-2026-11-30-am/)
+})
+
+test('MYIRS1_888 + groupe AFORP : flux en panne, créneaux manuels conservés et sync réussie', async (t) => {
+  mockFetch(t, async (url) => {
+    if (url === AFORP_URL) {
+      throw new Error('panne Net-YPareo simulée')
+    }
+    return { ok: true, text: async () => JSON.stringify([RAW_EVENT]) }
+  })
+  const outPath = await makeOutPath(t)
+
+  const { eventCount } = await syncOne(aforpConfig(), outPath, null)
+
+  assert.equal(eventCount, 89)
+  assert.match(await readFile(outPath, 'utf8'), /manual-aforp-2026-09-30-am/)
+})
+
+test('groupe AFORP sans URL configurée (ex. G1 pas encore fourni) : aucun appel au flux', async (t) => {
+  const urls = []
+  mockFetch(t, async (url) => {
+    urls.push(url)
+    return { ok: true, text: async () => JSON.stringify([RAW_EVENT]) }
+  })
+  const outPath = await makeOutPath(t)
+
+  const { eventCount } = await syncOne(testConfig({ aforpGroup: 'G1', aforpIcsUrls: { G1: null, G2: AFORP_URL } }), outPath, null)
+
+  assert.equal(eventCount, 89)
+  assert.deepEqual(urls, ['https://example.invalid/GetCalendarData'])
+})

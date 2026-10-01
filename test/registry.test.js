@@ -159,3 +159,13 @@ test('inscription et suppression concurrentes sur le mÃªme registre restent cohÃ
   const stored = JSON.parse(await readFile(path, 'utf8'))
   assert.deepEqual(stored.map((s) => s.name), ['bob'])
 })
+
+test('enregistre le groupe AFORP quand il est fourni', async (t) => {
+  const path = await makeRegistryPath(t)
+
+  const student = await registerStudent(path, { name: 'alice', formation: 'MYIRS1_888', aforpGroup: 'G2' })
+
+  assert.equal(student.aforpGroup, 'G2')
+  const stored = JSON.parse(await readFile(path, 'utf8'))
+  assert.equal(stored[0].aforpGroup, 'G2')
+})

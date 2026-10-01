@@ -84,6 +84,30 @@ Par défaut, ces événements sont simplement ajoutés à ceux de l'API. Pour
   l'API est considéré comme déplacé ou annulé) ; les autres événements
   manuels (AFORP, soutenances) sont ajoutés tels quels.
 
+### Flux AFORP par groupe (Net-YPareo)
+
+Le CFA-AFORP publie un flux iCal par groupe d'alternants (G1, G2). Quand un
+étudiant a un groupe (`aforpGroup` dans le registre, `UVSQ_AFORP_GROUP` en
+mode mono-utilisateur) et que l'URL de ce groupe est configurée
+(`UVSQ_AFORP_ICS_URL_G1` / `UVSQ_AFORP_ICS_URL_G2`), la sync
+([`src/fetchAforpIcs.js`](./src/fetchAforpIcs.js)) :
+
+- publie les vrais cours AFORP (`AFORP - <cours>`, formateur et salle en
+  description, adresse de Cachan en lieu) ;
+- ignore les jours que Net-YPareo marque `UVSQ - ...` (déjà couverts par
+  `edt.uvsq.fr`) ;
+- retire les créneaux AFORP manuels (`manual-aforp-...`) des seuls jours
+  présents dans le flux : les jours que l'AFORP n'a pas encore publiés gardent
+  leurs créneaux manuels ;
+- garde tous les créneaux manuels si le flux est indisponible (avertissement
+  dans les logs, la sync n'échoue pas).
+
+Ces URL donnent accès au planning sans authentification : elles ne vont que
+dans `/etc/uvsq-schedule-sync/env`, jamais dans le dépôt, et n'apparaissent
+pas dans les logs. Le formulaire d'inscription propose le choix G1/G2
+uniquement pour `MYIRS1_888` ; pour un étudiant déjà inscrit, ajouter
+`"aforpGroup": "G1"` ou `"G2"` à son entrée dans `students.json`.
+
 ## Fichier de statut (surveillance)
 
 Quand `--out`/`UVSQ_OUT_PATH` est utilisé, un fichier `<out>.status.json` est

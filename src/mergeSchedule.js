@@ -133,3 +133,20 @@ export function mergeWithExcel(apiEvents, manualEvents) {
 
   return { events: [...enriched, ...extras], stats }
 }
+
+const AFORP_MANUAL_ID_PREFIX = 'manual-aforp-'
+
+// Remplace les créneaux AFORP saisis à la main (id "manual-aforp-...") par les
+// vrais cours du flux Net-YPareo du groupe (voir src/fetchAforpIcs.js), jour
+// par jour : un jour présent dans le flux fait foi (même s'il n'y figure que
+// comme jour UVSQ), un jour absent du flux (planning AFORP pas encore publié)
+// garde ses créneaux manuels.
+export function applyAforpFeed(manualEvents, feed) {
+  const kept = manualEvents.filter(
+    (event) => !(event.id.startsWith(AFORP_MANUAL_ID_PREFIX) && feed.days.has(event.start.slice(0, 10))),
+  )
+  return {
+    events: [...kept, ...feed.events],
+    stats: { replaced: manualEvents.length - kept.length, added: feed.events.length },
+  }
+}

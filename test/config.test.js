@@ -73,3 +73,24 @@ test('buildStudentConfig applique les surcharges calendarName/prodId de l\'étud
   assert.equal(cfg.calendarName, 'EDT de Jane')
   assert.equal(cfg.prodId, '//jane//FR')
 })
+
+test('URL des flux AFORP par groupe et groupe mono-utilisateur lus depuis l\'environnement', () => {
+  assert.deepEqual(loadConfig({}).aforpIcsUrls, { G1: null, G2: null })
+  assert.equal(loadConfig({}).aforpGroup, null)
+
+  const cfg = loadConfig({
+    UVSQ_AFORP_ICS_URL_G2: 'https://example.invalid/ical/G2/',
+    UVSQ_AFORP_GROUP: 'G2',
+  })
+
+  assert.deepEqual(cfg.aforpIcsUrls, { G1: null, G2: 'https://example.invalid/ical/G2/' })
+  assert.equal(cfg.aforpGroup, 'G2')
+})
+
+test('buildStudentConfig : groupe AFORP de l\'étudiant, jamais celui du mode mono-utilisateur', () => {
+  const baseCfg = loadConfig({ UVSQ_AFORP_GROUP: 'G1' })
+  const student = { formation: 'MYIRS1_888', name: 'jane-doe', token: 'a'.repeat(32) }
+
+  assert.equal(buildStudentConfig(baseCfg, student).aforpGroup, null)
+  assert.equal(buildStudentConfig(baseCfg, { ...student, aforpGroup: 'G2' }).aforpGroup, 'G2')
+})

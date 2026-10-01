@@ -4,7 +4,8 @@ import { generateIcs } from './generateIcs.js'
 import { writeAtomic } from './writeAtomic.js'
 import { writeFailureStatus, writeSuccessStatus } from './heartbeat.js'
 import { loadManualEvents } from './manualEvents.js'
-import { mergeWithExcel } from './mergeSchedule.js'
+import { applyAforpFeed, mergeWithExcel } from './mergeSchedule.js'
+import { fetchAforpIcs } from './fetchAforpIcs.js'
 
 // Formations dont le planning Excel officiel (retranscrit dans
 // src/manualEvents/<formation>.json) enrichit les créneaux de l'API UVSQ :
@@ -12,6 +13,28 @@ import { mergeWithExcel } from './mergeSchedule.js'
 // src/mergeSchedule.js). Les autres formations se contentent d'additionner
 // les éventuels événements manuels à ceux de l'API.
 const EXCEL_ENRICHED_FORMATIONS = new Set(['MYIRS1_888'])
+
+// Remplace les créneaux AFORP manuels par le flux Net-YPareo du groupe de
+// l'étudiant, quand il en a un et que son URL est configurée. Un flux en
+// panne n'est pas un échec de sync : les créneaux manuels restent en place.
+async function withAforpFeed(manualEvents, cfg) {
+  const url = cfg.aforpGroup ? cfg.aforpIcsUrls?.[cfg.aforpGroup] : null
+  if (!url) {
+    return manualEvents
+  }
+
+  try {
+    const feed = await fetchAforpIcs(url, cfg.fetch)
+    const { events, stats } = applyAforpFeed(manualEvents, feed)
+    console.error(
+      `[sync] AFORP ${cfg.aforpGroup} : ${stats.added} cours du flux, ${stats.replaced} créneau(x) manuel(s) remplacé(s) (${cfg.formation})`,
+    )
+    return events
+  } catch (error) {
+    console.error(`[sync] AFORP ${cfg.aforpGroup} : flux indisponible, créneaux manuels conservés (${error.message})`)
+    return manualEvents
+  }
+}
 
 // Génère le calendrier d'une seule config (un étudiant, ou l'unique formation
 // en mode mono-utilisateur) : fetch, parsing, écriture, statut. Utilisée par
@@ -27,7 +50,7 @@ export async function syncOne(cfg, outPath, statusPath) {
       .filter((event) => event !== null)
     console.error(`[sync] ${parsedEvents.length} événement(s) valide(s) après nettoyage (${cfg.formation})`)
 
-    const manualEvents = await loadManualEvents(cfg.formation)
+    const manualEvents = await withAforpFeed(await loadManualEvents(cfg.formation), cfg)
 
     let events
     if (EXCEL_ENRICHED_FORMATIONS.has(cfg.formation)) {

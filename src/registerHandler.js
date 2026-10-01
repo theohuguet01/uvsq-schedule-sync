@@ -1,6 +1,6 @@
 import { join } from 'node:path'
 
-import { isValidFormation, isValidName } from './students.js'
+import { AFORP_FORMATIONS, isValidAforpGroup, isValidFormation, isValidName } from './students.js'
 import { registerStudent, NameTakenError } from './registry.js'
 import { buildStudentConfig } from '../config.js'
 import { syncOne } from './sync.js'
@@ -47,9 +47,21 @@ export async function handleRegister({ ip, body }, { registryPath, outDir, baseC
     return { status: 400, body: { error: 'Code de formation invalide : lettres, chiffres et underscore uniquement.' } }
   }
 
+  // Groupe AFORP facultatif, limité à G1/G2 et aux formations en alternance
+  // au CFA-AFORP : ignoré pour les autres formations (le formulaire ne
+  // l'affiche pas), refusé s'il ne fait pas partie de la liste.
+  let aforpGroup
+  const rawGroup = String(body?.aforpGroup ?? '').trim()
+  if (rawGroup && AFORP_FORMATIONS.has(formation)) {
+    if (!isValidAforpGroup(rawGroup)) {
+      return { status: 400, body: { error: 'Groupe AFORP invalide : choisissez G1 ou G2.' } }
+    }
+    aforpGroup = rawGroup
+  }
+
   let student
   try {
-    student = await registerStudent(registryPath, { name, formation })
+    student = await registerStudent(registryPath, { name, formation, aforpGroup })
   } catch (error) {
     if (error instanceof NameTakenError) {
       return { status: 409, body: { error: 'Ce nom est déjà pris, veuillez en choisir un autre.' } }

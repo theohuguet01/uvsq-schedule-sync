@@ -2,7 +2,8 @@
   {
     "name": "exemple-etudiant-1",
     "token": "<token1>",
-    "formation": "MYIRS1_888"
+    "formation": "MYIRS1_888",
+    "aforpGroup": "G2"
   },
   {
     "name": "exemple-etudiant-2",

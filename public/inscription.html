@@ -158,7 +158,8 @@
     margin: 0 0 8px;
   }
 
-  input[type="text"] {
+  input[type="text"],
+  select {
     width: 100%;
     box-sizing: border-box;
     padding: 8px 12px;
@@ -172,7 +173,8 @@
     font-family: inherit;
   }
 
-  input[type="text"]:focus {
+  input[type="text"]:focus,
+  select:focus {
     outline: 2px solid var(--uvsq-teal);
     outline-offset: 1px;
   }
@@ -329,6 +331,19 @@
               <input type="text" id="formation" name="formation" autocomplete="off" required maxlength="40" placeholder="ex. MYIRS1_888">
               <p class="hint">Visible dans l'URL de <code>edt.uvsq.fr</code> une fois votre emploi du temps affiché (paramètre federationIds).</p>
 
+              <!-- Affiché uniquement pour les formations en alternance au
+                   CFA-AFORP (voir AFORP_FORMATIONS dans src/students.js) :
+                   liste fermée, le serveur refuse toute autre valeur. -->
+              <div id="aforp-group-field" hidden>
+                <label for="aforpGroup">Groupe AFORP <span class="required" aria-hidden="true">*</span></label>
+                <select id="aforpGroup" name="aforpGroup">
+                  <option value="" selected disabled>Choisir un groupe</option>
+                  <option value="G1">G1</option>
+                  <option value="G2">G2</option>
+                </select>
+                <p class="hint">Ajoute vos cours au CFA-AFORP (Cachan) à votre emploi du temps.</p>
+              </div>
+
               <div class="honeypot" aria-hidden="true">
                 <label for="website">Site web</label>
                 <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
@@ -353,6 +368,7 @@
         <div class="card-body">
           <p class="confirm-row"><span>Nom :</span> <strong id="confirm-name"></strong></p>
           <p class="confirm-row"><span>Formation :</span> <strong id="confirm-formation"></strong></p>
+          <p class="confirm-row" id="confirm-aforp-group-row" hidden><span>Groupe AFORP :</span> <strong id="confirm-aforp-group"></strong></p>
 
           <div class="form-actions">
             <button type="button" class="btn-primary" id="confirm-btn">Confirmer et générer le lien</button>
@@ -400,6 +416,19 @@
 
     let pending = null
 
+    const AFORP_FORMATIONS = ['MYIRS1_888']
+    const formationInput = document.getElementById('formation')
+    const aforpGroupField = document.getElementById('aforp-group-field')
+    const aforpGroupSelect = document.getElementById('aforpGroup')
+
+    function isAforpFormation() {
+      return AFORP_FORMATIONS.includes(formationInput.value.trim())
+    }
+
+    formationInput.addEventListener('input', () => {
+      aforpGroupField.hidden = !isAforpFormation()
+    })
+
     function showMessage(el, text) {
       el.textContent = text
       el.hidden = !text
@@ -416,17 +445,24 @@
       showMessage(formMessage, '')
 
       const name = document.getElementById('name').value.trim()
-      const formation = document.getElementById('formation').value.trim()
+      const formation = formationInput.value.trim()
       const website = document.getElementById('website').value
+      const aforpGroup = isAforpFormation() ? aforpGroupSelect.value : ''
 
       if (!name || !formation) {
         showMessage(formMessage, 'Merci de renseigner votre nom et votre code de formation.')
         return
       }
+      if (isAforpFormation() && !aforpGroup) {
+        showMessage(formMessage, 'Merci de choisir votre groupe AFORP.')
+        return
+      }
 
-      pending = { name, formation, website }
+      pending = { name, formation, website, ...(aforpGroup ? { aforpGroup } : {}) }
       document.getElementById('confirm-name').textContent = name
       document.getElementById('confirm-formation').textContent = formation
+      document.getElementById('confirm-aforp-group').textContent = aforpGroup
+      document.getElementById('confirm-aforp-group-row').hidden = !aforpGroup
       showMessage(confirmMessage, '')
       showStep('confirm')
     })

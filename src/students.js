@@ -12,6 +12,17 @@ export const NAME_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/
 // (voir src/registerHandler.js).
 export const FORMATION_PATTERN = /^[A-Za-z0-9_]{2,40}$/
 
+// Groupes d'alternants AFORP disposant d'un flux Net-YPareo (voir
+// src/fetchAforpIcs.js). Liste fermée : la valeur sert de clé dans
+// config.aforpIcsUrls.
+export const AFORP_GROUPS = ['G1', 'G2']
+// Seule formation dont les alternants vont au CFA-AFORP.
+export const AFORP_FORMATIONS = new Set(['MYIRS1_888'])
+
+export function isValidAforpGroup(group) {
+  return AFORP_GROUPS.includes(group)
+}
+
 export function isValidName(name) {
   return typeof name === 'string' && NAME_PATTERN.test(name)
 }
@@ -40,6 +51,9 @@ export function validateStudent(student, index) {
   }
   if (student.prodId !== undefined && typeof student.prodId !== 'string') {
     throw new Error(`Étudiant ${label} : "prodId" doit être une chaîne`)
+  }
+  if (student.aforpGroup !== undefined && !isValidAforpGroup(student.aforpGroup)) {
+    throw new Error(`Étudiant ${label} : "aforpGroup" doit valoir ${AFORP_GROUPS.join(' ou ')}`)
   }
 }
 

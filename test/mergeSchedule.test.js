@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { mergeWithExcel, nameSimilarity, normalizeCourseName } from '../src/mergeSchedule.js'
+import { applyAforpFeed, mergeWithExcel, nameSimilarity, normalizeCourseName } from '../src/mergeSchedule.js'
 
 const api = (id, start, end, summary, location = 'AMPHI GENTIANE') => ({ id, start, end, summary, location })
 const course = (id, start, end, summary, description) => ({ id: `manual-cours-${id}`, start, end, summary, location: 'AMPHI GENTIANE', description })
@@ -95,4 +95,31 @@ test('normalisation et similarité des noms de cours', () => {
   assert.ok(nameSimilarity('Introduction à la Sécurité', 'Introduction à la sécurité.') === 1)
   assert.ok(nameSimilarity('Principes des transsmissions radio.', 'Principes des transmissions radio') >= 0.75)
   assert.ok(nameSimilarity('Modélisation des réseaux', 'Fondamentaux des Réseaux') < 0.75)
+})
+
+const aforp = (day, half) => ({
+  id: `manual-aforp-${day}-${half}`,
+  start: `${day}T${half === 'am' ? '08:30' : '13:00'}:00`,
+  end: `${day}T${half === 'am' ? '12:00' : '16:30'}:00`,
+  summary: 'AFORP',
+  location: 'AFORP - CACHAN',
+})
+
+test('flux AFORP : créneaux manuels remplacés uniquement sur les jours couverts par le flux', () => {
+  const soutenance = { id: 'manual-soutenance-2027-08-24-am', start: '2027-08-24T09:00:00', end: '2027-08-24T12:00:00', summary: 'Soutenances M1' }
+  const feedCourse = { id: 'aforp-1', start: '2026-09-30T08:30:00', end: '2026-09-30T12:00:00', summary: 'AFORP - Droit' }
+
+  const { events, stats } = applyAforpFeed(
+    [aforp('2026-09-30', 'am'), aforp('2026-09-30', 'pm'), aforp('2026-11-30', 'am'), soutenance],
+    { events: [feedCourse], days: new Set(['2026-09-30']) },
+  )
+
+  assert.deepEqual(events.map((event) => event.id), ['manual-aforp-2026-11-30-am', 'manual-soutenance-2027-08-24-am', 'aforp-1'])
+  assert.deepEqual(stats, { replaced: 2, added: 1 })
+})
+
+test('flux AFORP : un jour marqué UVSQ dans le flux retire aussi le créneau AFORP manuel', () => {
+  const { events } = applyAforpFeed([aforp('2026-10-12', 'am')], { events: [], days: new Set(['2026-10-12']) })
+
+  assert.deepEqual(events, [])
 })
