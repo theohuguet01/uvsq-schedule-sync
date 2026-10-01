@@ -108,3 +108,17 @@ test('échappe les caractères spéciaux iCal dans le résumé et le lieu (RFC 5
   assert.match(ics, /SUMMARY:Cours\\, TD\\; Groupe \\\\A/)
   assert.match(ics, /LOCATION:Salle A\\, B/)
 })
+
+test('avec uidSalt : UID propre au calendrier, stable, sans le token en clair', () => {
+  const event = { id: '-1742255826:1073733534:17:5810462:4', start: '2026-09-07T09:30:00', end: '2026-09-07T12:30:00', summary: 'Cours' }
+  const tokenA = 'a'.repeat(32)
+  const tokenB = 'b'.repeat(32)
+
+  const uidOf = (ics) => ics.match(/^UID:(.*)$/m)[1]
+  const uidA = uidOf(generateIcs([event], testCfg({ uidSalt: tokenA })))
+
+  assert.match(uidA, /^[a-f0-9]{32}@uvsq-schedule-sync$/)
+  assert.equal(uidOf(generateIcs([event], testCfg({ uidSalt: tokenA }))), uidA)
+  assert.notEqual(uidOf(generateIcs([event], testCfg({ uidSalt: tokenB }))), uidA)
+  assert.ok(!uidA.includes(tokenA))
+})

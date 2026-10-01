@@ -94,3 +94,10 @@ test('buildStudentConfig : groupe AFORP de l\'étudiant, jamais celui du mode mo
   assert.equal(buildStudentConfig(baseCfg, student).aforpGroup, null)
   assert.equal(buildStudentConfig(baseCfg, { ...student, aforpGroup: 'G2' }).aforpGroup, 'G2')
 })
+
+test('buildStudentConfig : uidSalt = token de l\'étudiant (UID propres à chaque calendrier)', () => {
+  const cfg = buildStudentConfig(loadConfig({}), { formation: 'MYIRS1_888', name: 'jane-doe', token: 'c'.repeat(32) })
+
+  assert.equal(cfg.uidSalt, 'c'.repeat(32))
+  assert.equal(loadConfig({}).uidSalt, undefined)
+})

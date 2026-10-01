@@ -177,6 +177,14 @@ Si au moins un étudiant échoue, le processus quitte tout de même avec un code
 de sortie non nul (pour que systemd/cron/monitoring détecte le souci), mais
 seulement **après** avoir traité et publié le calendrier de tous les autres.
 
+Chaque calendrier a ses propres `UID` d'événements (hash du token de
+l'étudiant et de l'identifiant d'origine, voir
+[`src/generateIcs.js`](./src/generateIcs.js)) : sans ça, deux étudiants d'une
+même formation partageraient les mêmes `UID` Celcat, et un client qui affiche
+deux de ces calendriers dans le même compte (ex. Google Agenda) pourrait ne
+montrer certains cours qu'une fois. Les `UID` restent stables d'une sync à
+l'autre ; le mode mono-utilisateur garde les identifiants d'origine.
+
 Pour ajouter ou retirer une personne, éditer le registre puis relancer une
 exécution (`sudo systemctl start uvsq-schedule-sync.service` avec systemd) :
 aucun redémarrage du timer n'est nécessaire.

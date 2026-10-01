@@ -66,6 +66,8 @@ export function buildStudentConfig(baseCfg, student) {
     calendarName: student.calendarName ?? baseCfg.calendarName,
     prodId: student.prodId ?? baseCfg.prodId,
     aforpGroup: student.aforpGroup ?? null,
+    // UID des événements propres à chaque étudiant (voir src/generateIcs.js).
+    uidSalt: student.token,
   }
 }
 
